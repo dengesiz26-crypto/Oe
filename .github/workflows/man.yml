@@ -1,0 +1,187 @@
+name: GOALDIR API Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Test GOALDIR API
+        env:
+          GOALDIR_API_KEY: ${{ secrets.GOALDIR_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          import requests
+
+          BASE = "https://sports.bzzoiro.com/api/v2"
+          KEY = os.getenv("GOALDIR_API_KEY", "").strip()
+
+          print("API KEY EXISTS:", bool(KEY))
+          print("API BASE:", BASE)
+
+          if not KEY:
+              raise SystemExit("ERROR: GOALDIR_API_KEY secret is missing.")
+
+          headers = {
+              "Authorization": f"Token {KEY}",
+              "Accept": "application/json",
+          }
+
+          def test(name, url, params=None):
+              print("\n==============================")
+              print(name)
+              print("URL:", url)
+              print("PARAMS:", params)
+
+              r = requests.get(
+                  url,
+                  headers=headers,
+                  params=params,
+                  timeout=30,
+              )
+
+              print("STATUS:", r.status_code)
+              print("RESPONSE:")
+              print(r.text[:5000])
+
+              if r.status_code >= 400:
+                  raise SystemExit(
+                      f"API ERROR {r.status_code} at {name}"
+                  )
+
+              return r.json()
+
+          # 1. Leagues
+          leagues = test(
+              "LEAGUES",
+              f"{BASE}/leagues/",
+              {"limit": 200},
+          )
+
+          if isinstance(leagues, dict):
+              league_rows = leagues.get("results", [])
+          elif isinstance(leagues, list):
+              league_rows = leagues
+          else:
+              league_rows = []
+
+          print("\nLEAGUE COUNT:", len(league_rows))
+
+          if not league_rows:
+              raise SystemExit("ERROR: API returned zero leagues.")
+
+          # Show first leagues
+          print("\nFIRST LEAGUES:")
+          for league in league_rows[:20]:
+              print(
+                  "ID:", league.get("id"),
+                  "| NAME:", league.get("name"),
+                  "| COUNTRY:", league.get("country"),
+              )
+
+          # 2. Find a league with seasons
+          found = False
+
+          for league in league_rows[:20]:
+              league_id = league.get("id")
+
+              if league_id is None:
+                  continue
+
+              seasons_url = f"{BASE}/leagues/{league_id}/seasons/"
+
+              try:
+                  seasons = test(
+                      f"SEASONS league={league_id}",
+                      seasons_url,
+                      {"limit": 200},
+                  )
+              except SystemExit:
+                  continue
+
+              if isinstance(seasons, dict):
+                  season_rows = seasons.get("results", [])
+              elif isinstance(seasons, list):
+                  season_rows = seasons
+              else:
+                  season_rows = []
+
+              print(
+                  f"SEASON COUNT for league {league_id}:",
+                  len(season_rows)
+              )
+
+              if not season_rows:
+                  continue
+
+              season = season_rows[0]
+              season_id = season.get("id")
+
+              print("\nSELECTED:")
+              print("LEAGUE ID:", league_id)
+              print("LEAGUE:", league.get("name"))
+              print("SEASON ID:", season_id)
+              print("SEASON:", season)
+
+              if season_id is None:
+                  continue
+
+              # 3. Events
+              events = test(
+                  f"EVENTS league={league_id} season={season_id}",
+                  f"{BASE}/events/",
+                  {
+                      "league_id": league_id,
+                      "season_id": season_id,
+                      "status": "finished",
+                      "limit": 5,
+                  },
+              )
+
+              if isinstance(events, dict):
+                  event_rows = events.get("results", [])
+              elif isinstance(events, list):
+                  event_rows = events
+              else:
+                  event_rows = []
+
+              print("\nFINISHED EVENTS:", len(event_rows))
+
+              for event in event_rows:
+                  print(
+                      "EVENT:",
+                      event.get("id"),
+                      "|",
+                      event.get("home_team"),
+                      "vs",
+                      event.get("away_team"),
+                      "|",
+                      event.get("date"),
+                  )
+
+              found = True
+              break
+
+          if not found:
+              raise SystemExit(
+                  "ERROR: Could not find a league with usable seasons."
+              )
+
+          print("\n==============================")
+          print("API TEST COMPLETED")
+          print("==============================")
+          PY
