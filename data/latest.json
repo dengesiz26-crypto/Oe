@@ -1,6 +1,6 @@
 {
   "prediction_engine": true,
-  "generated_at": "2026-09-25T06:14:25.060335+00:00",
+  "generated_at": "2026-09-25T08:18:42.654453+00:00",
   "historical_matches": 50059,
   "upcoming_matches": 50,
   "stats": {
@@ -10,12 +10,12 @@
   "coupons": [
     {
       "title": "Günün 4'lü Değer Kombinesi",
-      "combined_confidence": 0.6617,
+      "combined_confidence": 0.6353,
       "matches": [
         "Fortaleza FC - Deportes Tolima",
         "Utah Royals FC - North Carolina Courage",
         "Columbus Crew - Inter Miami CF",
-        "Fortaleza - Athletic Club"
+        "Bolivia - Paraguay"
       ]
     }
   ],
@@ -138,6 +138,36 @@
         },
         "confidence": 0.6335,
         "reason": "Ev sahibi form/hücum (λ=1.50), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604978,
+      "home": "Bolivia",
+      "away": "Paraguay",
+      "home_id": 663,
+      "away_id": 458,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.24,
+        "lambda_away": 1.1,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.3844084816199793,
+          "draw": 0.3009326056360098,
+          "away": 0.31465891274401075,
+          "over25": 0.4144812601803853,
+          "under25": 0.5855187398196147,
+          "bttsYes": 0.4844855314591757,
+          "bttsNo": 0.5155144685408243
+        },
+        "confidence": 0.6135,
+        "reason": "Ev sahibi form/hücum (λ=1.24), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
       }
     },
     {
@@ -1306,23 +1336,6 @@
         },
         "confidence": 0.554,
         "reason": "Ev sahibi form/hücum (λ=1.17), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
-      }
-    },
-    {
-      "id": 603675,
-      "home": "Shanghai Shenhua",
-      "away": "FC Zenit",
-      "home_id": 2035,
-      "away_id": 1331,
-      "league_name": "",
-      "league": "other",
-      "date": null,
-      "status": "notstarted",
-      "home_score": null,
-      "away_score": null,
-      "prediction": {
-        "available": false,
-        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
       }
     }
   ]
