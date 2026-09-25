@@ -1,4 +1,4 @@
-name: KALE Live Monitor & Engine
+name: KALE Live Monitor
 
 on:
   workflow_dispatch:
