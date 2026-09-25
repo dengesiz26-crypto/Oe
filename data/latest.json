@@ -1,15 +1,9 @@
 {
-  "generated_at": "2026-09-25T03:04:27.548747+00:00",
-  "source": "GOALDIR/BSD Football API v2",
+  "status": "waiting",
+  "source": "GOALDIR Football API v2",
   "prediction_engine": "KALE",
-  "goal_api_predictions_used": false,
-  "historical_matches": 120,
-  "upcoming_matches": 0,
-  "validation": {
-    "available": true,
-    "matches": 36,
-    "accuracy_1x2": 1.0,
-    "brier_1x2": 0.05932
-  },
-  "fixtures": []
+  "generated_at": null,
+  "matches": [],
+  "predictions": [],
+  "message": "Waiting for KALE engine output."
 }
