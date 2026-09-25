@@ -3,7 +3,23 @@ name: Unzip and deploy project archive
 # Runs whenever a .zip file is pushed to the repo root (e.g. you drag-and-drop
 # ai-football-predictor.zip into GitHub's web UI and commit it to main).
 # It extracts the archive, moves its contents into the repo root, deletes the
-# zip, and commits the result â€” so the zip itself never has to be unpacked by hand.
+# zip, and commits the result.
+#
+# IMPORTANT â€” one-time setup required:
+# The default GITHUB_TOKEN can NEVER create or update files under
+# .github/workflows/, even with `permissions: contents: write` set â€” this is
+# a hard GitHub security restriction, not something this workflow can work
+# around. Since the archive includes .github/workflows/ai-football.yml, this
+# job needs a Personal Access Token (PAT) with the `workflow` scope instead:
+#
+#   1. GitHub -> Settings (your profile, not the repo) -> Developer settings
+#      -> Personal access tokens -> Tokens (classic) -> Generate new token
+#   2. Scopes: check "repo" and "workflow"
+#   3. Copy the token, then in THIS repo: Settings -> Secrets and variables
+#      -> Actions -> New repository secret
+#        Name:  DEPLOY_PAT
+#        Value: <the token you just copied>
+#   4. Done â€” this workflow will use that secret automatically below.
 
 on:
   push:
@@ -27,6 +43,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Use the PAT for checkout too, so the later push is authenticated
+          # with a token that actually has workflow-file permission.
+          token: ${{ secrets.DEPLOY_PAT }}
+
+      - name: Verify PAT is configured
+        run: |
+          if [ -z "${{ secrets.DEPLOY_PAT }}" ]; then
+            echo "::error::DEPLOY_PAT secret is not set. See the comment at the top of this workflow file for setup steps (a PAT with 'repo' + 'workflow' scope is required because the archive contains .github/workflows/*)."
+            exit 1
+          fi
 
       - name: Find the zip file
         id: findzip
@@ -34,7 +60,6 @@ jobs:
           if [ -n "${{ github.event.inputs.zip_name }}" ]; then
             ZIP_FILE="${{ github.event.inputs.zip_name }}"
           else
-            # Pick the most recently modified .zip in the repo root
             ZIP_FILE=$(ls -t ./*.zip 2>/dev/null | head -n1 | xargs -n1 basename || true)
           fi
 
@@ -67,8 +92,6 @@ jobs:
             SRC="$WORKDIR"
           fi
 
-          # Copy everything (including dotfiles like .github, .gitignore)
-          # into the repo root, overwriting matching paths.
           cp -a "$SRC"/. ./
 
           rm -rf "$WORKDIR"
@@ -81,4 +104,4 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git diff --quiet --cached || git commit -m "chore: extract and deploy ${{ steps.findzip.outputs.zip_file }}"
-          git push
+          git push "https://x-access-token:${{ secrets.DEPLOY_PAT }}@github.com/${{ github.repository }}.git" HEAD:main
