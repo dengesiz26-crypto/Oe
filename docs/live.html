@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Football — Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><span class="brand-mark"></span>AI FOOTBALL</a>
+  <nav class="mainnav">
+    <a href="index.html">Home</a>
+    <a href="live.html" class="active">Live</a>
+    <a href="ai-picks.html">AI Picks</a>
+    <a href="odds-ai.html">Odds &amp; AI</a>
+    <a href="coupons.html">Coupons</a>
+    <a href="results.html">Results</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <div class="page-head"><h1><span class="status-dot"></span>Live matches</h1><p>Score-only. No exact-score predictions are shown.</p></div>
+  <div class="card" id="live-card"></div>
+</main>
+<footer><div class="wrap">Updated on a fixed schedule via GitHub Actions, not second-by-second.</div></footer>
+<script src="js/app.js"></script>
+<script>
+(async function(){
+  const live = await loadJSON("data/live.json");
+  const matches = live?.live || [];
+  const card = document.getElementById("live-card");
+  card.innerHTML = matches.length ? matches.map(m => `
+    <div class="ticket-leg">
+      <div class="leg-match">${m.home_team} ${m.home_score} — ${m.away_score} ${m.away_team}</div>
+      <div class="leg-market">${m.minute}' · ${m.league}</div>
+    </div>`).join("") : `<div class="empty">No live matches right now.</div>`;
+})();
+</script>
+</body>
+</html>

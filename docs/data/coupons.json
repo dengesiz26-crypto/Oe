@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-09-25T08:00:00+00:00",
+  "coupons": [
+    {
+      "coupon_id": "20260925-0800-A",
+      "status": "PENDING",
+      "joint_probability": 0.3721,
+      "legs": [
+        {"fixture_id": "goaldir:5511023", "match": "Manchester City - Arsenal", "market": "over_1_5", "label": "Over 1.5", "probability": 0.782, "odds": 1.34, "classification": "BANKO", "result": "PENDING"},
+        {"fixture_id": "goaldir:5511034", "match": "Fenerbahce - Galatasaray", "market": "under_2_5", "label": "Under 2.5", "probability": 0.579, "odds": 1.95, "classification": "IDEAL", "result": "PENDING"}
+      ]
+    },
+    {
+      "coupon_id": "20260924-1800-B",
+      "status": "WON",
+      "joint_probability": 0.401,
+      "legs": [
+        {"fixture_id": "goaldir:5509981", "match": "Bayern Munich - Union Berlin", "market": "1x2_home", "label": "Home", "probability": 0.71, "odds": 1.28, "classification": "BANKO", "result": "WIN"},
+        {"fixture_id": "goaldir:5509990", "match": "Inter - Torino", "market": "over_1_5", "label": "Over 1.5", "probability": 0.69, "odds": 1.41, "classification": "STANDARD", "result": "WIN"}
+      ]
+    }
+  ]
+}
