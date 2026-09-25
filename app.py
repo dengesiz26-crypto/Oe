@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 
 import numpy as np
 import requests
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_cors import CORS
 
 
@@ -26,22 +26,10 @@ API_KEY = (
 ).strip()
 
 PORT = int(os.getenv("PORT", "5000"))
-
-HISTORY_SEASONS = int(
-    os.getenv("HISTORY_SEASONS", "3")
-)
-
-MIN_HISTORY = int(
-    os.getenv("MIN_HISTORY", "8")
-)
-
-MIN_CONFIDENCE = float(
-    os.getenv("MIN_CONFIDENCE", "0.55")
-)
-
-MIN_EDGE = float(
-    os.getenv("MIN_EDGE", "0.025")
-)
+HISTORY_SEASONS = int(os.getenv("HISTORY_SEASONS", "3"))
+MIN_HISTORY = int(os.getenv("MIN_HISTORY", "8"))
+MIN_CONFIDENCE = float(os.getenv("MIN_CONFIDENCE", "0.55"))
+MIN_EDGE = float(os.getenv("MIN_EDGE", "0.025"))
 
 MAX_GOALS = 8
 
@@ -91,15 +79,13 @@ def cache_put(key, value):
 
 def api_get(path, params=None):
     if not API_KEY:
-        raise RuntimeError(
-            "GOALDIR_API_KEY is missing."
-        )
+        raise RuntimeError("GOALDIR_API_KEY is missing.")
+
+    params = dict(params or {})
 
     key = path + "?" + "&".join(
-        f"{k}={v}"
-        for k, v in sorted(
-            (params or {}).items()
-        )
+        f"{k}={params[k]}"
+        for k in sorted(params)
     )
 
     cached = cache_get(key)
@@ -111,7 +97,7 @@ def api_get(path, params=None):
 
     response = SESSION.get(
         url,
-        params=params or {},
+        params=params,
         timeout=30,
     )
 
@@ -132,7 +118,12 @@ def api_get(path, params=None):
 
     response.raise_for_status()
 
-    data = response.json()
+    try:
+        data = response.json()
+    except ValueError as exc:
+        raise RuntimeError(
+            f"GOALDIR returned invalid JSON for {path}."
+        ) from exc
 
     cache_put(key, data)
 
@@ -140,7 +131,7 @@ def api_get(path, params=None):
 
 
 # ============================================================
-# PAGINATION / RESPONSE PARSING
+# RESPONSE PARSING / PAGINATION
 # ============================================================
 
 def extract_results(payload):
@@ -167,24 +158,24 @@ def extract_results(payload):
 
 
 def fetch_all(path, params=None, max_pages=100):
-    params = dict(params or {})
+    base_params = dict(params or {})
 
     limit = min(
-        int(params.get("limit", 200)),
+        int(base_params.get("limit", 200)),
         200,
     )
 
-    params["limit"] = limit
+    base_params["limit"] = limit
 
     all_rows = []
 
     for page in range(max_pages):
-
-        params["offset"] = page * limit
+        page_params = dict(base_params)
+        page_params["offset"] = page * limit
 
         payload = api_get(
             path,
-            params,
+            page_params,
         )
 
         rows = extract_results(payload)
@@ -196,6 +187,12 @@ def fetch_all(path, params=None, max_pages=100):
 
         if len(rows) < limit:
             break
+
+        if isinstance(payload, dict):
+            next_value = payload.get("next")
+
+            if next_value is None:
+                break
 
     return all_rows
 
@@ -240,11 +237,32 @@ def norm(value):
         "ı": "i",
     })
 
-    return value.translate(table)
+    value = value.translate(table)
+
+    for char in (
+        "-",
+        "_",
+        "/",
+        ".",
+        ",",
+        ":",
+        "(",
+        ")",
+    ):
+        value = value.replace(char, " ")
+
+    return " ".join(value.split())
 
 
 def team_key(name):
     return norm(name)
+
+
+def team_ref(team_id, name):
+    if team_id is not None:
+        return f"id:{team_id}"
+
+    return f"name:{team_key(name)}"
 
 
 # ============================================================
@@ -269,7 +287,6 @@ LEAGUE_ALIASES = {
     "bundesliga": "bundesliga",
 
     "2 bundesliga": "bundesliga2",
-    "2. bundesliga": "bundesliga2",
 
     "serie a": "seriea",
     "italy serie a": "seriea",
@@ -363,9 +380,6 @@ def league_match(name):
     for alias, key in LEAGUE_ALIASES.items():
         a = norm(alias)
 
-        if n == a:
-            return key
-
         if n.startswith(a + " "):
             return key
 
@@ -393,7 +407,7 @@ def event_home(event):
         )
 
     if home:
-        return home
+        return str(home)
 
     home_team = event.get("home_team")
 
@@ -419,7 +433,7 @@ def event_away(event):
         )
 
     if away:
-        return away
+        return str(away)
 
     away_team = event.get("away_team")
 
@@ -439,12 +453,18 @@ def event_home_id(event):
     home = event.get("home")
 
     if isinstance(home, dict):
-        return home.get("id")
+        return (
+            home.get("id")
+            or home.get("team_id")
+        )
 
     home_team = event.get("home_team")
 
     if isinstance(home_team, dict):
-        return home_team.get("id")
+        return (
+            home_team.get("id")
+            or home_team.get("team_id")
+        )
 
     return (
         event.get("home_team_id")
@@ -456,12 +476,18 @@ def event_away_id(event):
     away = event.get("away")
 
     if isinstance(away, dict):
-        return away.get("id")
+        return (
+            away.get("id")
+            or away.get("team_id")
+        )
 
     away_team = event.get("away_team")
 
     if isinstance(away_team, dict):
-        return away_team.get("id")
+        return (
+            away_team.get("id")
+            or away_team.get("team_id")
+        )
 
     return (
         event.get("away_team_id")
@@ -519,33 +545,44 @@ def score(event, side):
         if isinstance(scores, dict):
             value = scores.get(side)
 
+            if value is None:
+                value = scores.get(
+                    "home"
+                    if side == "home"
+                    else "away"
+                )
+
     if value is None:
         scores = event.get("scores")
 
         if isinstance(scores, dict):
             value = scores.get(side)
 
+    if value is None:
+        return None
+
+    if isinstance(value, dict):
+        if value.get("current") is not None:
+            value = value.get("current")
+        elif value.get("display") is not None:
+            value = value.get("display")
+        elif value.get("score") is not None:
+            value = value.get("score")
+        else:
+            return None
+
     try:
-        if value is None:
+        if isinstance(value, float) and not value.is_integer():
             return None
 
-        if isinstance(value, dict):
-            value = (
-                value.get("current")
-                or value.get("display")
-                or value.get("score")
-            )
+        value = int(value)
 
-        if value in (
-            "",
-            "-",
-            None,
-        ):
+        if value < 0:
             return None
 
-        return int(value)
+        return value
 
-    except Exception:
+    except (TypeError, ValueError):
         return None
 
 
@@ -569,19 +606,11 @@ def normalize_event(event):
         "away_id": event_away_id(event),
         "league_id": event_league_id(event),
         "league_name": league_name,
-        "league": league_match(
-            league_name
-        ),
+        "league": league_match(league_name),
         "date": event_date(event),
         "status": event.get("status"),
-        "home_score": score(
-            event,
-            "home",
-        ),
-        "away_score": score(
-            event,
-            "away",
-        ),
+        "home_score": score(event, "home"),
+        "away_score": score(event, "away"),
         "raw": event,
     }
 
@@ -601,7 +630,6 @@ def load_leagues():
     result = []
 
     for row in rows:
-
         if not isinstance(row, dict):
             continue
 
@@ -616,13 +644,16 @@ def load_leagues():
         if not key:
             continue
 
+        league_id = row.get("id")
+
+        if league_id is None:
+            continue
+
         result.append({
-            "id": row.get("id"),
+            "id": league_id,
             "name": name,
             "key": key,
-            "country": row.get(
-                "country"
-            ),
+            "country": row.get("country"),
         })
 
     return result
@@ -634,8 +665,7 @@ def current_season(league_id):
     )
 
     if isinstance(payload, dict):
-
-        if "id" in payload:
+        if payload.get("id") is not None:
             return payload
 
         data = payload.get("data")
@@ -652,7 +682,6 @@ def seasons(league_id):
     )
 
     if isinstance(payload, dict):
-
         rows = payload.get("seasons")
 
         if isinstance(rows, list):
@@ -681,42 +710,47 @@ def seasons(league_id):
 # ============================================================
 
 def load_history():
-
     leagues = load_leagues()
 
+    if not leagues:
+        raise RuntimeError(
+            "GOALDIR returned no supported leagues."
+        )
+
     history = []
+    errors = []
 
     for league in leagues:
-
         lid = league["id"]
-
-        if lid is None:
-            continue
 
         try:
             season_rows = seasons(lid)
-        except Exception:
+        except Exception as exc:
+            errors.append(
+                f"{league['name']} seasons: {exc}"
+            )
             continue
 
         season_rows = [
-            x for x in season_rows
+            x
+            for x in season_rows
             if isinstance(x, dict)
         ]
 
         season_rows.sort(
             key=lambda x: (
                 x.get("year")
-                or 0
+                if x.get("year") is not None
+                else 0
             ),
             reverse=True,
         )
 
-        season_rows = season_rows[
+        selected_seasons = season_rows[
             :HISTORY_SEASONS
         ]
 
-        for season in season_rows:
-
+        for season in selected_seasons:
             sid = season.get("id")
 
             if sid is None:
@@ -728,18 +762,18 @@ def load_history():
                     {
                         "league_id": lid,
                         "season_id": sid,
+                        "status": "finished",
                         "limit": 200,
                     },
                 )
-
-            except Exception:
+            except Exception as exc:
+                errors.append(
+                    f"{league['name']} season {sid}: {exc}"
+                )
                 continue
 
             for raw in events:
-
-                event = normalize_event(
-                    raw
-                )
+                event = normalize_event(raw)
 
                 if not event:
                     continue
@@ -747,8 +781,6 @@ def load_history():
                 hg = event["home_score"]
                 ag = event["away_score"]
 
-                # Only real completed results
-                # with real numeric scores enter training.
                 if hg is None or ag is None:
                     continue
 
@@ -772,22 +804,48 @@ def load_history():
     unique = {}
 
     for row in history:
-
         event_id_value = row["event_id"]
 
         if event_id_value is not None:
-            unique[
-                str(event_id_value)
-            ] = row
+            unique[str(event_id_value)] = row
+        else:
+            fallback_key = (
+                str(row["date"]),
+                str(row["home_id"]),
+                str(row["away_id"]),
+                str(row["home"]),
+                str(row["away"]),
+                str(row["hg"]),
+                str(row["ag"]),
+            )
 
-    history = list(
-        unique.values()
-    )
+            unique[fallback_key] = row
+
+    history = list(unique.values())
 
     history.sort(
         key=lambda x: (
             x["date"] or ""
         )
+    )
+
+    if not history:
+        details = ""
+
+        if errors:
+            details = " | " + " | ".join(
+                errors[:5]
+            )
+
+        raise RuntimeError(
+            "GOALDIR returned no real finished historical matches."
+            + details
+        )
+
+    print(
+        f"Historical data loaded: "
+        f"{len(history)} finished matches "
+        f"from {len(leagues)} supported leagues."
     )
 
     return history
@@ -798,39 +856,23 @@ def load_history():
 # ============================================================
 
 def load_upcoming():
-
-    now = datetime.now(
-        timezone.utc
-    )
-
-    end = now + timedelta(
-        days=2
-    )
+    now = datetime.now(timezone.utc)
+    end = now + timedelta(days=2)
 
     events = fetch_all(
         "/events/",
         {
-            "date_from":
-                now.strftime("%Y-%m-%d"),
-
-            "date_to":
-                end.strftime("%Y-%m-%d"),
-
-            "status":
-                "notstarted",
-
-            "limit":
-                200,
+            "date_from": now.strftime("%Y-%m-%d"),
+            "date_to": end.strftime("%Y-%m-%d"),
+            "status": "upcoming",
+            "limit": 200,
         },
     )
 
     result = []
 
     for raw in events:
-
-        event = normalize_event(
-            raw
-        )
+        event = normalize_event(raw)
 
         if not event:
             continue
@@ -849,16 +891,10 @@ def load_upcoming():
     unique = {}
 
     for item in result:
-
         if item["id"] is not None:
+            unique[str(item["id"])] = item
 
-            unique[
-                str(item["id"])
-            ] = item
-
-    return list(
-        unique.values()
-    )
+    return list(unique.values())
 
 
 # ============================================================
@@ -866,22 +902,16 @@ def load_upcoming():
 # ============================================================
 
 def load_live():
-
     payload = api_get(
         "/events/live/"
     )
 
-    rows = extract_results(
-        payload
-    )
+    rows = extract_results(payload)
 
     result = []
 
     for raw in rows:
-
-        event = normalize_event(
-            raw
-        )
+        event = normalize_event(raw)
 
         if event:
             result.append(event)
@@ -894,20 +924,18 @@ def load_live():
 # ============================================================
 
 def load_event_odds(event_id):
+    if event_id is None:
+        return {}
 
-    payload = api_get(
+    return api_get(
         f"/events/{event_id}/odds/"
     )
 
-    return payload
-
 
 def number(value):
-
     try:
         value = float(value)
-
-    except Exception:
+    except (TypeError, ValueError):
         return None
 
     if not math.isfinite(value):
@@ -922,32 +950,7 @@ def number(value):
     return value
 
 
-def odds_rows(payload):
-
-    if isinstance(payload, list):
-        return payload
-
-    if not isinstance(payload, dict):
-        return []
-
-    for key in (
-        "results",
-        "data",
-        "odds",
-    ):
-
-        value = payload.get(key)
-
-        if isinstance(value, list):
-            return value
-
-    return []
-
-
 def parse_odds(payload):
-
-    rows = odds_rows(payload)
-
     result = {
         "home": None,
         "draw": None,
@@ -958,82 +961,41 @@ def parse_odds(payload):
         "bttsNo": None,
     }
 
-    for row in rows:
+    if not isinstance(payload, dict):
+        return result
 
-        if not isinstance(row, dict):
-            continue
+    odds = payload.get("odds")
 
-        market = str(
-            row.get("market")
-            or ""
-        ).lower()
+    if not isinstance(odds, dict):
+        return result
 
-        outcome = str(
-            row.get("outcome")
-            or ""
-        )
+    result["home"] = number(
+        odds.get("home_win")
+    )
 
-        value = number(
-            row.get(
-                "decimal_odds"
-            )
-        )
+    result["draw"] = number(
+        odds.get("draw")
+    )
 
-        if value is None:
-            value = number(
-                row.get("odds")
-            )
+    result["away"] = number(
+        odds.get("away_win")
+    )
 
-        if value is None:
-            continue
+    result["over25"] = number(
+        odds.get("over_25_goals")
+    )
 
-        if market == "1x2":
+    result["under25"] = number(
+        odds.get("under_25_goals")
+    )
 
-            if outcome == "HOME":
-                result["home"] = max(
-                    result["home"] or 0,
-                    value,
-                )
+    result["bttsYes"] = number(
+        odds.get("btts_yes")
+    )
 
-            elif outcome == "DRAW":
-                result["draw"] = max(
-                    result["draw"] or 0,
-                    value,
-                )
-
-            elif outcome == "AWAY":
-                result["away"] = max(
-                    result["away"] or 0,
-                    value,
-                )
-
-        elif market == "over_under_25":
-
-            if outcome == "over":
-                result["over25"] = max(
-                    result["over25"] or 0,
-                    value,
-                )
-
-            elif outcome == "under":
-                result["under25"] = max(
-                    result["under25"] or 0,
-                    value,
-                )
-
-        elif market == "btts":
-
-            if outcome == "yes":
-                result["bttsYes"] = max(
-                    result["bttsYes"] or 0,
-                    value,
-                )
-
-            elif outcome == "no":
-                result["bttsNo"] = max(
-                    result["bttsNo"] or 0,
-                    value,
-                )
+    result["bttsNo"] = number(
+        odds.get("btts_no")
+    )
 
     return result
 
@@ -1043,7 +1005,6 @@ def parse_odds(payload):
 # ============================================================
 
 def empty_team():
-
     return {
         "elo": 1500.0,
         "home_elo": 1500.0,
@@ -1065,14 +1026,10 @@ def empty_team():
 
 
 def team_stats():
-
-    return defaultdict(
-        empty_team
-    )
+    return defaultdict(empty_team)
 
 
 def avg(values, fallback):
-
     if not values:
         return fallback
 
@@ -1093,7 +1050,6 @@ def elo_probability(
     home_elo,
     away_elo,
 ):
-
     diff = (
         home_elo
         + HOME_ADVANTAGE
@@ -1111,26 +1067,21 @@ def elo_probability(
 # ============================================================
 
 def train_state(history):
-
     teams = team_stats()
 
     for row in history:
-
-        h = team_key(
-            row["home"]
+        h = team_ref(
+            row.get("home_id"),
+            row["home"],
         )
 
-        a = team_key(
-            row["away"]
+        a = team_ref(
+            row.get("away_id"),
+            row["away"],
         )
 
-        hg = float(
-            row["hg"]
-        )
-
-        ag = float(
-            row["ag"]
-        )
+        hg = float(row["hg"])
+        ag = float(row["ag"])
 
         H = teams[h]
         A = teams[a]
@@ -1174,9 +1125,7 @@ def train_state(history):
         A["away_gf"].append(ag)
         A["away_ga"].append(hg)
 
-        H["results"].append(
-            actual
-        )
+        H["results"].append(actual)
 
         A["results"].append(
             1.0
@@ -1197,7 +1146,6 @@ def train_state(history):
 # ============================================================
 
 def poisson(k, lam):
-
     if lam <= 0:
         return 0.0
 
@@ -1215,38 +1163,16 @@ def dc_tau(
     la,
     rho=-0.08,
 ):
+    if home_goals == 0 and away_goals == 0:
+        return 1 - lh * la * rho
 
-    if (
-        home_goals == 0
-        and away_goals == 0
-    ):
-        return (
-            1
-            - lh * la * rho
-        )
+    if home_goals == 0 and away_goals == 1:
+        return 1 + lh * rho
 
-    if (
-        home_goals == 0
-        and away_goals == 1
-    ):
-        return (
-            1
-            + lh * rho
-        )
+    if home_goals == 1 and away_goals == 0:
+        return 1 + la * rho
 
-    if (
-        home_goals == 1
-        and away_goals == 0
-    ):
-        return (
-            1
-            + la * rho
-        )
-
-    if (
-        home_goals == 1
-        and away_goals == 1
-    ):
+    if home_goals == 1 and away_goals == 1:
         return 1 - rho
 
     return 1.0
@@ -1256,7 +1182,6 @@ def matrix(
     lambda_home,
     lambda_away,
 ):
-
     m = np.zeros(
         (
             MAX_GOALS + 1,
@@ -1264,14 +1189,8 @@ def matrix(
         )
     )
 
-    for h in range(
-        MAX_GOALS + 1
-    ):
-
-        for a in range(
-            MAX_GOALS + 1
-        ):
-
+    for h in range(MAX_GOALS + 1):
+        for a in range(MAX_GOALS + 1):
             m[h, a] = (
                 poisson(
                     h,
@@ -1298,7 +1217,6 @@ def matrix(
 
 
 def market_probabilities(m):
-
     home = 0.0
     draw = 0.0
     away = 0.0
@@ -1308,30 +1226,19 @@ def market_probabilities(m):
 
     btts_yes = 0.0
 
-    for h in range(
-        MAX_GOALS + 1
-    ):
-
-        for a in range(
-            MAX_GOALS + 1
-        ):
-
-            p = float(
-                m[h, a]
-            )
+    for h in range(MAX_GOALS + 1):
+        for a in range(MAX_GOALS + 1):
+            p = float(m[h, a])
 
             if h > a:
                 home += p
-
             elif h == a:
                 draw += p
-
             else:
                 away += p
 
             if h + a > 2:
                 over25 += p
-
             else:
                 under25 += p
 
@@ -1357,35 +1264,32 @@ def predict_fixture(
     fixture,
     teams,
 ):
-
-    hkey = team_key(
-        fixture["home"]
+    hkey = team_ref(
+        fixture.get("home_id"),
+        fixture["home"],
     )
 
-    akey = team_key(
-        fixture["away"]
+    akey = team_ref(
+        fixture.get("away_id"),
+        fixture["away"],
     )
 
     H = teams.get(hkey)
     A = teams.get(akey)
 
     if H is None or A is None:
-
         return {
             "available": False,
-            "reason":
-                "insufficient_team_history",
+            "reason": "insufficient_team_history",
         }
 
     if (
         H["games"] < MIN_HISTORY
         or A["games"] < MIN_HISTORY
     ):
-
         return {
             "available": False,
-            "reason":
-                "insufficient_team_history",
+            "reason": "insufficient_team_history",
         }
 
     home_attack = avg(
@@ -1508,9 +1412,7 @@ def predict_fixture(
         lambda_away,
     )
 
-    probs = market_probabilities(
-        m
-    )
+    probs = market_probabilities(m)
 
     score_index = np.unravel_index(
         np.argmax(m),
@@ -1544,20 +1446,19 @@ def predict_fixture(
     return {
         "available": True,
 
-        "lambda_home":
-            round(
-                lambda_home,
-                4,
-            ),
+        "lambda_home": round(
+            lambda_home,
+            4,
+        ),
 
-        "lambda_away":
-            round(
-                lambda_away,
-                4,
-            ),
+        "lambda_away": round(
+            lambda_away,
+            4,
+        ),
 
-        "most_likely":
-            f"{score_index[0]}-{score_index[1]}",
+        "most_likely": (
+            f"{score_index[0]}-{score_index[1]}"
+        ),
 
         "probabilities": {
             k: round(
@@ -1567,18 +1468,14 @@ def predict_fixture(
             for k, v in probs.items()
         },
 
-        "confidence":
-            round(
-                float(confidence),
-                6,
-            ),
+        "confidence": round(
+            float(confidence),
+            6,
+        ),
 
         "history": {
-            "home_games":
-                H["games"],
-
-            "away_games":
-                A["games"],
+            "home_games": H["games"],
+            "away_games": A["games"],
         },
     }
 
@@ -1591,7 +1488,6 @@ def calculate_value(
     probability,
     odds,
 ):
-
     if (
         probability is None
         or odds is None
@@ -1610,15 +1506,10 @@ def attach_value(
     prediction,
     odds,
 ):
-
-    if not prediction.get(
-        "available"
-    ):
+    if not prediction.get("available"):
         return prediction
 
-    probs = prediction[
-        "probabilities"
-    ]
+    probs = prediction["probabilities"]
 
     mappings = {
         "home": "home",
@@ -1633,7 +1524,6 @@ def attach_value(
     values = []
 
     for market, prob_key in mappings.items():
-
         odd = odds.get(market)
 
         if odd is None:
@@ -1653,15 +1543,12 @@ def attach_value(
 
         values.append({
             "market": market,
-            "probability":
-                probability,
-            "odds":
-                odd,
-            "edge":
-                round(
-                    edge,
-                    6,
-                ),
+            "probability": probability,
+            "odds": odd,
+            "edge": round(
+                edge,
+                6,
+            ),
         })
 
     values.sort(
@@ -1672,12 +1559,12 @@ def attach_value(
     prediction["value"] = values
 
     prediction["qualified"] = [
-        x for x in values
+        x
+        for x in values
         if (
             x["edge"] >= MIN_EDGE
-            and prediction[
-                "confidence"
-            ] >= MIN_CONFIDENCE
+            and prediction["confidence"]
+            >= MIN_CONFIDENCE
         )
     ]
 
@@ -1689,34 +1576,26 @@ def attach_value(
 # ============================================================
 
 def walk_forward(history):
-
     if len(history) < 100:
-
         return {
             "available": False,
-            "reason":
-                "not_enough_historical_matches",
-            "matches":
-                len(history),
+            "reason": "not_enough_historical_matches",
+            "matches": len(history),
         }
 
     start = max(
         80,
-        int(
-            len(history) * 0.70
-        ),
+        int(len(history) * 0.70),
     )
 
     evaluated = 0
     correct_1x2 = 0
-
     brier = []
 
     for i in range(
         start,
         len(history),
     ):
-
         training = history[:i]
 
         state = train_state(
@@ -1726,10 +1605,10 @@ def walk_forward(history):
         actual = history[i]
 
         fixture = {
-            "home":
-                actual["home"],
-            "away":
-                actual["away"],
+            "home": actual["home"],
+            "away": actual["away"],
+            "home_id": actual.get("home_id"),
+            "away_id": actual.get("away_id"),
         }
 
         pred = predict_fixture(
@@ -1737,24 +1616,18 @@ def walk_forward(history):
             state,
         )
 
-        if not pred.get(
-            "available"
-        ):
+        if not pred.get("available"):
             continue
 
-        p = pred[
-            "probabilities"
-        ]
+        p = pred["probabilities"]
 
         hg = actual["hg"]
         ag = actual["ag"]
 
         if hg > ag:
             actual_market = "home"
-
         elif hg == ag:
             actual_market = "draw"
-
         else:
             actual_market = "away"
 
@@ -1769,27 +1642,25 @@ def walk_forward(history):
 
         evaluated += 1
 
-        if (
-            predicted_market
-            == actual_market
-        ):
+        if predicted_market == actual_market:
             correct_1x2 += 1
 
         target = {
-            "home":
+            "home": (
                 1.0
                 if actual_market == "home"
-                else 0.0,
-
-            "draw":
+                else 0.0
+            ),
+            "draw": (
                 1.0
                 if actual_market == "draw"
-                else 0.0,
-
-            "away":
+                else 0.0
+            ),
+            "away": (
                 1.0
                 if actual_market == "away"
-                else 0.0,
+                else 0.0
+            ),
         }
 
         brier.append(
@@ -1798,12 +1669,10 @@ def walk_forward(history):
                     p["home"]
                     - target["home"]
                 ) ** 2
-
                 + (
                     p["draw"]
                     - target["draw"]
                 ) ** 2
-
                 + (
                     p["away"]
                     - target["away"]
@@ -1812,33 +1681,22 @@ def walk_forward(history):
         )
 
     if evaluated == 0:
-
         return {
             "available": False,
-            "reason":
-                "no_valid_evaluations",
+            "reason": "no_valid_evaluations",
         }
 
     return {
         "available": True,
-
-        "matches":
-            evaluated,
-
-        "accuracy_1x2":
-            round(
-                correct_1x2
-                / evaluated,
-                6,
-            ),
-
-        "brier_1x2":
-            round(
-                statistics.mean(
-                    brier
-                ),
-                6,
-            ),
+        "matches": evaluated,
+        "accuracy_1x2": round(
+            correct_1x2 / evaluated,
+            6,
+        ),
+        "brier_1x2": round(
+            statistics.mean(brier),
+            6,
+        ),
     }
 
 
@@ -1847,14 +1705,7 @@ def walk_forward(history):
 # ============================================================
 
 def run_engine():
-
     history = load_history()
-
-    if not history:
-
-        raise RuntimeError(
-            "GOALDIR returned no real historical matches."
-        )
 
     state = train_state(
         history
@@ -1865,70 +1716,58 @@ def run_engine():
     output = []
 
     for fixture in fixtures:
-
         try:
-
             prediction = predict_fixture(
                 fixture,
                 state,
             )
 
-            if prediction.get(
-                "available"
-            ):
+            odds = {}
 
+            if prediction.get("available"):
                 try:
-
-                    odds_payload = (
-                        load_event_odds(
-                            fixture["id"]
-                        )
+                    odds_payload = load_event_odds(
+                        fixture["id"]
                     )
 
                     odds = parse_odds(
                         odds_payload
                     )
 
-                except Exception:
-
-                    odds = {}
+                except Exception as exc:
+                    print(
+                        f"Odds unavailable for event "
+                        f"{fixture.get('id')}: {exc}"
+                    )
 
                 prediction = attach_value(
                     prediction,
                     odds,
                 )
 
-                fixture["odds"] = odds
+            fixture["odds"] = odds
+            fixture["prediction"] = prediction
 
-            fixture["prediction"] = (
-                prediction
-            )
-
-            output.append(
-                fixture
-            )
+            output.append(fixture)
 
         except Exception as exc:
+            fixture["odds"] = {}
 
             fixture["prediction"] = {
                 "available": False,
-                "reason":
-                    f"prediction_error:{exc}",
+                "reason": f"prediction_error:{exc}",
             }
 
-            output.append(
-                fixture
-            )
+            output.append(fixture)
 
     validation = walk_forward(
         history
     )
 
     return {
-        "generated_at":
-            datetime.now(
-                timezone.utc
-            ).isoformat(),
+        "generated_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
 
         "source":
             "GOALDIR/BSD Football API v2",
@@ -1959,27 +1798,19 @@ def run_engine():
 
 @app.get("/api/health")
 def health():
-
     return jsonify({
         "ok": True,
-        "api":
-            "GOALDIR/BSD v2",
-        "base":
-            API_BASE,
-        "api_key_configured":
-            bool(API_KEY),
-        "prediction_engine":
-            "KALE",
-        "external_predictions":
-            False,
+        "api": "GOALDIR/BSD v2",
+        "base": API_BASE,
+        "api_key_configured": bool(API_KEY),
+        "prediction_engine": "KALE",
+        "external_predictions": False,
     })
 
 
 @app.get("/api/run")
 def api_run():
-
     try:
-
         result = run_engine()
 
         return jsonify({
@@ -1988,43 +1819,33 @@ def api_run():
         })
 
     except Exception as exc:
-
         return jsonify({
             "ok": False,
-            "error":
-                str(exc),
+            "error": str(exc),
         }), 500
 
 
 @app.get("/api/live")
 def api_live():
-
     try:
-
         live = load_live()
 
         return jsonify({
             "ok": True,
-            "source":
-                "GOALDIR/BSD v2",
-            "matches":
-                live,
+            "source": "GOALDIR/BSD v2",
+            "matches": live,
         })
 
     except Exception as exc:
-
         return jsonify({
             "ok": False,
-            "error":
-                str(exc),
+            "error": str(exc),
         }), 500
 
 
 @app.get("/api/validate")
 def api_validate():
-
     try:
-
         history = load_history()
 
         result = walk_forward(
@@ -2040,11 +1861,9 @@ def api_validate():
         })
 
     except Exception as exc:
-
         return jsonify({
             "ok": False,
-            "error":
-                str(exc),
+            "error": str(exc),
         }), 500
 
 
@@ -2054,7 +1873,6 @@ def api_validate():
 
 @app.get("/")
 def index():
-
     return """
 <!doctype html>
 <html lang="en">
@@ -2080,7 +1898,6 @@ def index():
     --muted:#8993a3;
     --good:#7ee787;
     --bad:#ff7b72;
-    --accent:#58a6ff;
 }
 
 *{
@@ -2091,10 +1908,7 @@ body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    font-family:Arial,Helvetica,sans-serif;
 }
 
 header{
@@ -2201,15 +2015,12 @@ button:hover{
 .badge{
     display:inline-block;
     margin-top:8px;
+    margin-right:4px;
     padding:4px 7px;
     border-radius:6px;
     border:1px solid var(--border);
     color:var(--muted);
     font-size:10px;
-}
-
-.value{
-    margin-top:12px;
 }
 
 .validation{
@@ -2303,9 +2114,9 @@ async function runEngine(){
         const data =
             await response.json();
 
-        if(!data.ok){
+        if(!response.ok || !data.ok){
             throw new Error(
-                data.error
+                data.error || "Engine request failed."
             );
         }
 
@@ -2314,7 +2125,7 @@ async function runEngine(){
         );
 
         renderFixtures(
-            data.fixtures
+            data.fixtures || []
         );
 
         status.textContent =
@@ -2346,9 +2157,9 @@ async function loadLive(){
         const data =
             await response.json();
 
-        if(!data.ok){
+        if(!response.ok || !data.ok){
             throw new Error(
-                data.error
+                data.error || "Live request failed."
             );
         }
 
@@ -2361,12 +2172,9 @@ async function loadLive(){
         ){
 
             const card =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
-            card.className =
-                "card";
+            card.className = "card";
 
             card.innerHTML = `
 
@@ -2409,9 +2217,7 @@ async function loadLive(){
                 </div>
             `;
 
-            app.appendChild(
-                card
-            );
+            app.appendChild(card);
         }
 
     }catch(error){
@@ -2436,12 +2242,9 @@ function renderValidation(
     }
 
     const box =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
-    box.className =
-        "validation";
+    box.className = "validation";
 
     box.innerHTML = `
 
@@ -2455,9 +2258,7 @@ function renderValidation(
             </span>
 
             <span>
-                ${
-                    validation.matches
-                }
+                ${validation.matches}
             </span>
         </div>
 
@@ -2493,9 +2294,7 @@ function renderValidation(
 
     `;
 
-    app.appendChild(
-        box
-    );
+    app.appendChild(box);
 }
 
 
@@ -2512,12 +2311,9 @@ function renderFixtures(
             fixture.prediction;
 
         const card =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
-        card.className =
-            "card";
+        card.className = "card";
 
         if(
             !p
@@ -2554,9 +2350,7 @@ function renderFixtures(
 
             `;
 
-            app.appendChild(
-                card
-            );
+            app.appendChild(card);
 
             continue;
         }
@@ -2569,8 +2363,7 @@ function renderFixtures(
         for(
             const v
             of (
-                p.qualified
-                || []
+                p.qualified || []
             )
         ){
 
@@ -2672,92 +2465,57 @@ function renderFixtures(
                 </div>
 
                 <div class="row">
+                    <span>1</span>
                     <span>
-                        1
-                    </span>
-
-                    <span>
-                        ${pct(
-                            probs.home
-                        )}
+                        ${pct(probs.home)}
                     </span>
                 </div>
 
                 <div class="row">
+                    <span>X</span>
                     <span>
-                        X
-                    </span>
-
-                    <span>
-                        ${pct(
-                            probs.draw
-                        )}
+                        ${pct(probs.draw)}
                     </span>
                 </div>
 
                 <div class="row">
+                    <span>2</span>
                     <span>
-                        2
-                    </span>
-
-                    <span>
-                        ${pct(
-                            probs.away
-                        )}
+                        ${pct(probs.away)}
                     </span>
                 </div>
 
                 <div class="row">
+                    <span>Over 2.5</span>
                     <span>
-                        Over 2.5
-                    </span>
-
-                    <span>
-                        ${pct(
-                            probs.over25
-                        )}
+                        ${pct(probs.over25)}
                     </span>
                 </div>
 
                 <div class="row">
+                    <span>Under 2.5</span>
                     <span>
-                        Under 2.5
-                    </span>
-
-                    <span>
-                        ${pct(
-                            probs.under25
-                        )}
+                        ${pct(probs.under25)}
                     </span>
                 </div>
 
                 <div class="row">
+                    <span>BTTS Yes</span>
                     <span>
-                        BTTS Yes
-                    </span>
-
-                    <span>
-                        ${pct(
-                            probs.bttsYes
-                        )}
+                        ${pct(probs.bttsYes)}
                     </span>
                 </div>
 
                 <div class="row">
+                    <span>Model confidence</span>
                     <span>
-                        Model confidence
-                    </span>
-
-                    <span>
-                        ${pct(
-                            p.confidence
-                        )}
+                        ${pct(p.confidence)}
                     </span>
                 </div>
 
             </div>
 
-            <div class="value section">
+            <div class="section">
 
                 ${
                     values
@@ -2772,20 +2530,16 @@ function renderFixtures(
             </div>
 
             <div class="badge">
-                Prediction:
-                KALE
+                Prediction: KALE
             </div>
 
             <div class="badge">
-                Data:
-                GOALDIR
+                Data: GOALDIR
             </div>
 
         `;
 
-        app.appendChild(
-            card
-        );
+        app.appendChild(card);
     }
 }
 
@@ -2798,16 +2552,14 @@ async function validate(){
     try{
 
         const response =
-            await fetch(
-                "/api/validate"
-            );
+            await fetch("/api/validate");
 
         const data =
             await response.json();
 
-        if(!data.ok){
+        if(!response.ok || !data.ok){
             throw new Error(
-                data.error
+                data.error || "Validation failed."
             );
         }
 
@@ -2854,10 +2606,10 @@ if __name__ == "__main__":
     import sys
 
     if not API_KEY:
-
         print(
             "ERROR: GOALDIR_API_KEY is not set."
         )
+        raise SystemExit(1)
 
     if "--run" in sys.argv:
 
@@ -2880,6 +2632,10 @@ if __name__ == "__main__":
                 ensure_ascii=False,
                 indent=2,
             )
+
+        print(
+            "data/latest.json written successfully."
+        )
 
     else:
 
