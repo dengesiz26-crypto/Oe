@@ -1,10 +1,1329 @@
 {
   "prediction_engine": true,
-  "generated_at": "2026-09-25T04:17:07.943712+00:00",
+  "generated_at": "2026-09-25T05:05:55.477973+00:00",
+  "historical_matches": 50059,
+  "upcoming_matches": 50,
   "stats": {
-    "wins": 0,
-    "losses": 0
+    "wins": 24,
+    "losses": 6
   },
-  "coupons": [],
-  "fixtures": []
+  "coupons": [
+    {
+      "title": "Günün 4'lü Değer Kombinesi",
+      "combined_confidence": 0.6617,
+      "matches": [
+        "Fortaleza FC - Deportes Tolima",
+        "Utah Royals FC - North Carolina Courage",
+        "Columbus Crew - Inter Miami CF",
+        "Fortaleza - Athletic Club"
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "id": 220191,
+      "home": "Fortaleza FC",
+      "away": "Deportes Tolima",
+      "home_id": 4782,
+      "away_id": 781,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.49,
+        "lambda_away": 0.64,
+        "most_likely": "1-0",
+        "probabilities": {
+          "home": 0.5703736475398917,
+          "draw": 0.2802988826126825,
+          "away": 0.1493274698474257,
+          "over25": 0.35738794394733336,
+          "under25": 0.6426120560526667,
+          "bttsYes": 0.3736782908339265,
+          "bttsNo": 0.6263217091660735
+        },
+        "confidence": 0.7137,
+        "reason": "Ev sahibi form/hücum (λ=1.49), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 223089,
+      "home": "Haiti",
+      "away": "Costa Rica",
+      "home_id": 465,
+      "away_id": 699,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.03,
+        "lambda_away": 0.97,
+        "most_likely": "0-0",
+        "probabilities": {
+          "home": 0.3508162628213909,
+          "draw": 0.32996899908367683,
+          "away": 0.3192147380949325,
+          "over25": 0.32325835079814863,
+          "under25": 0.6767416492018514,
+          "bttsYes": 0.4100032063309344,
+          "bttsNo": 0.5899967936690655
+        },
+        "confidence": 0.5751,
+        "reason": "Ev sahibi form/hücum (λ=1.03), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 0-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 216466,
+      "home": "Utah Royals FC",
+      "away": "North Carolina Courage",
+      "home_id": 3931,
+      "away_id": 3934,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.04,
+        "lambda_away": 0.94,
+        "most_likely": "0-0",
+        "probabilities": {
+          "home": 0.3616862545681394,
+          "draw": 0.3317496326389461,
+          "away": 0.30656411279291457,
+          "over25": 0.31685807168534125,
+          "under25": 0.6831419283146587,
+          "bttsYes": 0.4037811442837387,
+          "bttsNo": 0.5962188557162613
+        },
+        "confidence": 0.5804,
+        "reason": "Ev sahibi form/hücum (λ=1.04), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 0-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 5318,
+      "home": "Columbus Crew",
+      "away": "Inter Miami CF",
+      "home_id": 295,
+      "away_id": 293,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.5,
+        "lambda_away": 1.33,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.4017615960803552,
+          "draw": 0.2691658044716122,
+          "away": 0.32907259944803224,
+          "over25": 0.5377669810380407,
+          "under25": 0.46223301896195934,
+          "bttsYes": 0.5810881794125515,
+          "bttsNo": 0.41891182058744847
+        },
+        "confidence": 0.6335,
+        "reason": "Ev sahibi form/hücum (λ=1.50), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 10148,
+      "home": "Fortaleza",
+      "away": "Athletic Club",
+      "home_id": 152,
+      "away_id": 843,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.76,
+        "lambda_away": 1.01,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.5405640091600021,
+          "draw": 0.2519695686873964,
+          "away": 0.20746642215260136,
+          "over25": 0.5254485662432379,
+          "under25": 0.4745514337567621,
+          "bttsYes": 0.5371943300148971,
+          "bttsNo": 0.46280566998510286
+        },
+        "confidence": 0.7192,
+        "reason": "Ev sahibi form/hücum (λ=1.76), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 220190,
+      "home": "Jaguares de Córdoba",
+      "away": "Alianza Valledupar FC",
+      "home_id": 4785,
+      "away_id": 4783,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.31,
+        "lambda_away": 1.02,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.42256689759975163,
+          "draw": 0.29852538185511934,
+          "away": 0.2789077205451289,
+          "over25": 0.4116265875760769,
+          "under25": 0.588373412423923,
+          "bttsYes": 0.47689540267664265,
+          "bttsNo": 0.5231045973233573
+        },
+        "confidence": 0.6359,
+        "reason": "Ev sahibi form/hücum (λ=1.31), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 216465,
+      "home": "Bay FC",
+      "away": "Orlando Pride",
+      "home_id": 3932,
+      "away_id": 3938,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.06,
+        "lambda_away": 1.51,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.2557935130403084,
+          "draw": 0.27696506525184855,
+          "away": 0.46724142170784283,
+          "over25": 0.47493975851778664,
+          "under25": 0.5250602414822134,
+          "bttsYes": 0.5195201238452394,
+          "bttsNo": 0.4804798761547606
+        },
+        "confidence": 0.6753,
+        "reason": "Ev sahibi form/hücum (λ=1.06), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604479,
+      "home": "Kawkab Athletic Club Marrakech",
+      "away": "Hassania d'Agadir",
+      "home_id": 2065,
+      "away_id": 2060,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.37,
+        "lambda_away": 0.87,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.4757146559016129,
+          "draw": 0.29682049935880506,
+          "away": 0.22746484473958203,
+          "over25": 0.3876371965620588,
+          "under25": 0.6123628034379411,
+          "bttsYes": 0.4430278511529707,
+          "bttsNo": 0.5569721488470293
+        },
+        "confidence": 0.613,
+        "reason": "Ev sahibi form/hücum (λ=1.37), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 223092,
+      "home": "Guyana",
+      "away": "Cayman Islands",
+      "home_id": 705,
+      "away_id": 686,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 2.29,
+        "lambda_away": 0.91,
+        "most_likely": "2-0",
+        "probabilities": {
+          "home": 0.6778523019649011,
+          "draw": 0.19512103513727613,
+          "away": 0.12702666289782277,
+          "over25": 0.6194355857937526,
+          "under25": 0.3805644142062474,
+          "bttsYes": 0.5426905945500338,
+          "bttsNo": 0.45730940544996623
+        },
+        "confidence": 0.7253,
+        "reason": "Ev sahibi form/hücum (λ=2.29), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 2-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 214841,
+      "home": "Real Oviedo",
+      "away": "Sporting Gijón",
+      "home_id": 42,
+      "away_id": 1267,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.74,
+        "lambda_away": 1.2,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.4900442447522361,
+          "draw": 0.2542254008740433,
+          "away": 0.2557303543737206,
+          "over25": 0.5623940635479083,
+          "under25": 0.43760593645209167,
+          "bttsYes": 0.584726818508143,
+          "bttsNo": 0.415273181491857
+        },
+        "confidence": 0.6815,
+        "reason": "Ev sahibi form/hücum (λ=1.74), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 10146,
+      "home": "CRB",
+      "away": "Cuiabá",
+      "home_id": 831,
+      "away_id": 863,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.16,
+        "lambda_away": 0.88,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.41161769995921,
+          "draw": 0.3226367423739325,
+          "away": 0.2657455576668576,
+          "over25": 0.33196394296857934,
+          "under25": 0.6680360570314207,
+          "bttsYes": 0.41041358567014796,
+          "bttsNo": 0.589586414329852
+        },
+        "confidence": 0.6134,
+        "reason": "Ev sahibi form/hücum (λ=1.16), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 212616,
+      "home": "Israel",
+      "away": "Ireland",
+      "home_id": 679,
+      "away_id": 729,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.2,
+        "lambda_away": 1.16,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.35856791143726907,
+          "draw": 0.3002761594570668,
+          "away": 0.3411559291056641,
+          "over25": 0.4201197738450813,
+          "under25": 0.5798802261549187,
+          "bttsYes": 0.49053429675745885,
+          "bttsNo": 0.5094657032425411
+        },
+        "confidence": 0.5992,
+        "reason": "Ev sahibi form/hücum (λ=1.20), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 212615,
+      "home": "Norway",
+      "away": "Portugal",
+      "home_id": 488,
+      "away_id": 491,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.26,
+        "lambda_away": 1.24,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.36015821269614084,
+          "draw": 0.2902598609190356,
+          "away": 0.34958192638482366,
+          "over25": 0.4572807435483659,
+          "under25": 0.5427192564516341,
+          "bttsYes": 0.5201659081026168,
+          "bttsNo": 0.47983409189738324
+        },
+        "confidence": 0.6076,
+        "reason": "Ev sahibi form/hücum (λ=1.26), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 212614,
+      "home": "Germany",
+      "away": "Greece",
+      "home_id": 467,
+      "away_id": 702,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.86,
+        "lambda_away": 1.03,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.5589115484865302,
+          "draw": 0.24219683517086413,
+          "away": 0.19889161634260552,
+          "over25": 0.5531399090633766,
+          "under25": 0.4468600909366234,
+          "bttsYes": 0.552849664238042,
+          "bttsNo": 0.44715033576195795
+        },
+        "confidence": 0.7247,
+        "reason": "Ev sahibi form/hücum (λ=1.86), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604478,
+      "home": "MAS de Fès",
+      "away": "Renaissance Zemamra",
+      "home_id": 2071,
+      "away_id": 2072,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.74,
+        "lambda_away": 0.95,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.551751026338259,
+          "draw": 0.25348789361889945,
+          "away": 0.19476108004284126,
+          "over25": 0.504588293763437,
+          "under25": 0.49541170623656305,
+          "bttsYes": 0.5147289091232284,
+          "bttsNo": 0.48527109087677156
+        },
+        "confidence": 0.6876,
+        "reason": "Ev sahibi form/hücum (λ=1.74), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 211585,
+      "home": "Pumas UNAM",
+      "away": "Atlético San Luis",
+      "home_id": 313,
+      "away_id": 319,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.79,
+        "lambda_away": 0.85,
+        "most_likely": "1-0",
+        "probabilities": {
+          "home": 0.5876726106588311,
+          "draw": 0.2462961625624883,
+          "away": 0.1660312267786807,
+          "over25": 0.49155326980487635,
+          "under25": 0.5084467301951237,
+          "bttsYes": 0.48566428307669374,
+          "bttsNo": 0.5143357169233063
+        },
+        "confidence": 0.7509,
+        "reason": "Ev sahibi form/hücum (λ=1.79), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604450,
+      "home": "Malta",
+      "away": "Liechtenstein",
+      "home_id": 2089,
+      "away_id": 2212,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.82,
+        "lambda_away": 1.0,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.5595795392124481,
+          "draw": 0.2454975362933336,
+          "away": 0.1949229244942181,
+          "over25": 0.5351896205781421,
+          "under25": 0.4648103794218579,
+          "bttsYes": 0.537329561845077,
+          "bttsNo": 0.46267043815492304
+        },
+        "confidence": 0.7287,
+        "reason": "Ev sahibi form/hücum (λ=1.82), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 214836,
+      "home": "Eibar",
+      "away": "UD Las Palmas",
+      "home_id": 1397,
+      "away_id": 1266,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.22,
+        "lambda_away": 0.89,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.4274431727799289,
+          "draw": 0.3141591615552809,
+          "away": 0.2583976656647901,
+          "over25": 0.3532902451966624,
+          "under25": 0.6467097548033376,
+          "bttsYes": 0.425970290596706,
+          "bttsNo": 0.574029709403294
+        },
+        "confidence": 0.6271,
+        "reason": "Ev sahibi form/hücum (λ=1.22), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 214833,
+      "home": "Burgos Club de Fútbol",
+      "away": "CD Eldense",
+      "home_id": 1401,
+      "away_id": 1403,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.31,
+        "lambda_away": 0.8,
+        "most_likely": "1-0",
+        "probabilities": {
+          "home": 0.47693602609350993,
+          "draw": 0.30630827713545355,
+          "away": 0.21675569677103634,
+          "over25": 0.3514781355911898,
+          "under25": 0.6485218644088102,
+          "bttsYes": 0.41050573650989675,
+          "bttsNo": 0.5894942634901033
+        },
+        "confidence": 0.6565,
+        "reason": "Ev sahibi form/hücum (λ=1.31), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604504,
+      "home": "UD Maracena",
+      "away": "UE Tavernes",
+      "home_id": 1501,
+      "away_id": 8817,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 604477,
+      "home": "Moghreb Atlético Tetuán",
+      "away": "RS Berkane",
+      "home_id": 5186,
+      "away_id": 594,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 603045,
+      "home": "AD Os Limianos",
+      "away": "Rebordosa AC",
+      "home_id": 8333,
+      "away_id": 8306,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 215264,
+      "home": "Real Club Deportivo de A Coruña",
+      "away": "RCD Espanyol de Barcelona",
+      "home_id": 915,
+      "away_id": 919,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.25,
+        "lambda_away": 0.89,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.4337952532034146,
+          "draw": 0.3109295790685355,
+          "away": 0.25527516772804987,
+          "over25": 0.3613982158896963,
+          "under25": 0.6386017841103038,
+          "bttsYes": 0.43163603272407153,
+          "bttsNo": 0.5683639672759284
+        },
+        "confidence": 0.6326,
+        "reason": "Ev sahibi form/hücum (λ=1.25), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 212613,
+      "home": "Gibraltar",
+      "away": "Andorra",
+      "home_id": 2219,
+      "away_id": 701,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.52,
+        "lambda_away": 0.93,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.5008886962384752,
+          "draw": 0.2781050081926696,
+          "away": 0.22100629556885512,
+          "over25": 0.4438746584245926,
+          "under25": 0.5561253415754074,
+          "bttsYes": 0.48315885127879116,
+          "bttsNo": 0.5168411487212088
+        },
+        "confidence": 0.6893,
+        "reason": "Ev sahibi form/hücum (λ=1.52), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 212612,
+      "home": "Austria",
+      "away": "Kosovo",
+      "home_id": 483,
+      "away_id": 2211,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.89,
+        "lambda_away": 0.71,
+        "most_likely": "2-0",
+        "probabilities": {
+          "home": 0.6478486700435817,
+          "draw": 0.22809031752286396,
+          "away": 0.12406101243355401,
+          "over25": 0.4821077540213461,
+          "under25": 0.5178922459786539,
+          "bttsYes": 0.43892062226833256,
+          "bttsNo": 0.5610793777316674
+        },
+        "confidence": 0.7851,
+        "reason": "Ev sahibi form/hücum (λ=1.89), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 2-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 212611,
+      "home": "Denmark",
+      "away": "Wales",
+      "home_id": 1327,
+      "away_id": 727,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.6,
+        "lambda_away": 0.87,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.5356659682975657,
+          "draw": 0.26909656750068983,
+          "away": 0.19523746420174398,
+          "over25": 0.4490544840169709,
+          "under25": 0.5509455159830291,
+          "bttsYes": 0.47395981451585484,
+          "bttsNo": 0.5260401854841452
+        },
+        "confidence": 0.7112,
+        "reason": "Ev sahibi form/hücum (λ=1.60), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 212610,
+      "home": "Serbia",
+      "away": "Netherlands",
+      "home_id": 675,
+      "away_id": 469,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.55,
+        "lambda_away": 1.62,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.3582673874711036,
+          "draw": 0.2523372139748596,
+          "away": 0.3893953985540368,
+          "over25": 0.6133984637978058,
+          "under25": 0.3866015362021942,
+          "bttsYes": 0.6399830234580721,
+          "bttsNo": 0.3600169765419279
+        },
+        "confidence": 0.611,
+        "reason": "Ev sahibi form/hücum (λ=1.55), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604503,
+      "home": "CP Talayuela",
+      "away": "Sporting de Alcazar CF",
+      "home_id": 8831,
+      "away_id": 8816,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 604552,
+      "home": "Kun Khalifat FC",
+      "away": "Kwara United",
+      "home_id": 572,
+      "away_id": 575,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.18,
+        "lambda_away": 0.87,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.42002275731950983,
+          "draw": 0.3202131575078224,
+          "away": 0.25976408517266797,
+          "over25": 0.3364096319998959,
+          "under25": 0.6635903680001041,
+          "bttsYes": 0.4126679561128043,
+          "bttsNo": 0.5873320438871956
+        },
+        "confidence": 0.6193,
+        "reason": "Ev sahibi form/hücum (λ=1.18), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604551,
+      "home": "Ranchers Bees",
+      "away": "Rivers United",
+      "home_id": 8256,
+      "away_id": 564,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 604550,
+      "home": "Ikorodu City",
+      "away": "Enugu Rangers International",
+      "home_id": 576,
+      "away_id": 571,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.46,
+        "lambda_away": 0.7,
+        "most_likely": "1-0",
+        "probabilities": {
+          "home": 0.5469545722980066,
+          "draw": 0.28527506389380813,
+          "away": 0.16777036380818502,
+          "over25": 0.3660889393632074,
+          "under25": 0.6339110606367926,
+          "bttsYes": 0.39439065916063876,
+          "bttsNo": 0.6056093408393612
+        },
+        "confidence": 0.7014,
+        "reason": "Ev sahibi form/hücum (λ=1.46), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604527,
+      "home": "Plateau United",
+      "away": "Inter Lagos FC",
+      "home_id": 580,
+      "away_id": 8255,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 604526,
+      "home": "Katsina United",
+      "away": "Doma United FC",
+      "home_id": 573,
+      "away_id": 5648,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 604525,
+      "home": "Nasarawa United",
+      "away": "Niger Tornadoes",
+      "home_id": 582,
+      "away_id": 581,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.41,
+        "lambda_away": 0.96,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.46421666083317187,
+          "draw": 0.2904997489458029,
+          "away": 0.2452835902210252,
+          "over25": 0.4204808864482736,
+          "under25": 0.5795191135517264,
+          "bttsYes": 0.4747698272234238,
+          "bttsNo": 0.5252301727765762
+        },
+        "confidence": 0.6626,
+        "reason": "Ev sahibi form/hücum (λ=1.41), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604524,
+      "home": "Abia Warriors",
+      "away": "Bendel Insurance FC",
+      "home_id": 565,
+      "away_id": 570,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.43,
+        "lambda_away": 0.85,
+        "most_likely": "1-0",
+        "probabilities": {
+          "home": 0.4976384579974194,
+          "draw": 0.28954352083229534,
+          "away": 0.21281802117028506,
+          "over25": 0.3988506362253295,
+          "under25": 0.6011493637746705,
+          "bttsYes": 0.4453454598473985,
+          "bttsNo": 0.5546545401526015
+        },
+        "confidence": 0.6784,
+        "reason": "Ev sahibi form/hücum (λ=1.43), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604523,
+      "home": "Warri Wolves FC",
+      "away": "Shooting Stars",
+      "home_id": 574,
+      "away_id": 577,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.15,
+        "lambda_away": 0.72,
+        "most_likely": "1-0",
+        "probabilities": {
+          "home": 0.4502686116097266,
+          "draw": 0.33076931572480456,
+          "away": 0.21896207266546905,
+          "over25": 0.28860659251879595,
+          "under25": 0.711393407481204,
+          "bttsYes": 0.3609836377786247,
+          "bttsNo": 0.6390163622213754
+        },
+        "confidence": 0.6279,
+        "reason": "Ev sahibi form/hücum (λ=1.15), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604522,
+      "home": "Kano Pillars",
+      "away": "Enyimba",
+      "home_id": 566,
+      "away_id": 568,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.33,
+        "lambda_away": 0.74,
+        "most_likely": "1-0",
+        "probabilities": {
+          "home": 0.4996614604624806,
+          "draw": 0.3040055627647724,
+          "away": 0.1963329767727472,
+          "over25": 0.3418216316092526,
+          "under25": 0.6581783683907474,
+          "bttsYes": 0.39331910545060317,
+          "bttsNo": 0.6066808945493969
+        },
+        "confidence": 0.6682,
+        "reason": "Ev sahibi form/hücum (λ=1.33), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 603016,
+      "home": "SC Mineiro Aljustrelense",
+      "away": "GD Alcochetense",
+      "home_id": 8392,
+      "away_id": 8394,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 214840,
+      "home": "Mallorca",
+      "away": "Almería",
+      "home_id": 43,
+      "away_id": 1264,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.68,
+        "lambda_away": 0.95,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.5350030809630566,
+          "draw": 0.26079236881399914,
+          "away": 0.20420455022294426,
+          "over25": 0.48865966488243584,
+          "under25": 0.5113403351175642,
+          "bttsYes": 0.5083072248029176,
+          "bttsNo": 0.49169277519708243
+        },
+        "confidence": 0.7187,
+        "reason": "Ev sahibi form/hücum (λ=1.68), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604502,
+      "home": "CF Sant Rafel",
+      "away": "AE Prat",
+      "home_id": 8814,
+      "away_id": 6736,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 603720,
+      "home": "AD Camacha",
+      "away": "Florgrade FC",
+      "home_id": 4816,
+      "away_id": 8344,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 603015,
+      "home": "O Elvas CAD",
+      "away": "Sertanense",
+      "home_id": 8319,
+      "away_id": 8345,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 602958,
+      "home": "Amora FC",
+      "away": "JD Lajense",
+      "home_id": 4820,
+      "away_id": 8326,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 602957,
+      "home": "FC Alverca B",
+      "away": "AD Fazendense",
+      "home_id": 8720,
+      "away_id": 8721,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 215266,
+      "home": "Sevilla FC",
+      "away": "SD Eibar",
+      "home_id": 922,
+      "away_id": 921,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.37,
+        "lambda_away": 0.98,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.4464626471118391,
+          "draw": 0.2942593021592009,
+          "away": 0.25927805072896004,
+          "over25": 0.41638925680461025,
+          "under25": 0.5836107431953897,
+          "bttsYes": 0.47587112308396695,
+          "bttsNo": 0.524128876916033
+        },
+        "confidence": 0.6512,
+        "reason": "Ev sahibi form/hücum (λ=1.37), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 10147,
+      "home": "Criciúma",
+      "away": "Avaí",
+      "home_id": 929,
+      "away_id": 860,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.14,
+        "lambda_away": 0.79,
+        "most_likely": "0-0",
+        "probabilities": {
+          "home": 0.42723146842862375,
+          "draw": 0.32936782563320544,
+          "away": 0.24340070593817068,
+          "over25": 0.30452577940266706,
+          "under25": 0.695474220597333,
+          "bttsYes": 0.38220542703548643,
+          "bttsNo": 0.6177945729645136
+        },
+        "confidence": 0.6172,
+        "reason": "Ev sahibi form/hücum (λ=1.14), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 0-0 öngörülmüştür."
+      }
+    },
+    {
+      "id": 602985,
+      "home": "Estrela Calheta FC",
+      "away": "CD Cinfães",
+      "home_id": 8653,
+      "away_id": 5002,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    },
+    {
+      "id": 212609,
+      "home": "Lithuania",
+      "away": "Azerbaijan",
+      "home_id": 674,
+      "away_id": 2092,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.22,
+        "lambda_away": 0.96,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.41110602552917763,
+          "draw": 0.31088506737935095,
+          "away": 0.27800890709147125,
+          "over25": 0.3713045419311287,
+          "under25": 0.6286954580688713,
+          "bttsYes": 0.44480917970150347,
+          "bttsNo": 0.5551908202984965
+        },
+        "confidence": 0.6209,
+        "reason": "Ev sahibi form/hücum (λ=1.22), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 604950,
+      "home": "Seychelles",
+      "away": "Sri Lanka",
+      "home_id": 2272,
+      "away_id": 2289,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.17,
+        "lambda_away": 1.62,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.26520307608247157,
+          "draw": 0.26455503030716165,
+          "away": 0.4702418936103669,
+          "over25": 0.5281905581498012,
+          "under25": 0.4718094418501988,
+          "bttsYes": 0.5622018975934289,
+          "bttsNo": 0.43779810240657113
+        },
+        "confidence": 0.554,
+        "reason": "Ev sahibi form/hücum (λ=1.17), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
+      "id": 603675,
+      "home": "Shanghai Shenhua",
+      "away": "FC Zenit",
+      "home_id": 2035,
+      "away_id": 1331,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": false,
+        "reason": "Yetersiz geçmiş maç verisi (minimum maç eşiği altında)."
+      }
+    }
+  ]
 }
