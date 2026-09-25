@@ -16,9 +16,33 @@
     header {
       padding: 20px;
       border-bottom: 1px solid #242936;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    h1 { margin: 0 0 6px; font-size: 24px; }
-    .sub { color: #8993a5; font-size: 13px; }
+    h1 { margin: 0 0 4px; font-size: 22px; }
+    .sub { color: #8993a5; font-size: 12px; }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-refresh {
+      background: #1e2530;
+      color: #e8edf5;
+      border: 1px solid #323b4d;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .btn-refresh:hover {
+      background: #2b3546;
+    }
     main { max-width: 1100px; margin: auto; padding: 20px; }
     .grid {
       display: grid;
@@ -32,8 +56,8 @@
       border-radius: 12px;
       padding: 16px;
     }
-    .label { color: #8993a5; font-size: 12px; margin-bottom: 8px; }
-    .value { font-size: 22px; font-weight: bold; }
+    .label { color: #8993a5; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; }
+    .value { font-size: 20px; font-weight: bold; }
     #matches { display: grid; gap: 12px; }
     .match {
       background: #12151c;
@@ -41,9 +65,19 @@
       border-radius: 12px;
       padding: 16px;
     }
-    .teams { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+    .teams { font-size: 18px; font-weight: bold; margin-bottom: 6px; }
     .meta { color: #8993a5; font-size: 12px; margin-bottom: 12px; }
-    .prediction { border-top: 1px solid #242936; padding-top: 12px; line-height: 1.7; }
+    .prediction { border-top: 1px solid #242936; padding-top: 12px; line-height: 1.6; font-size: 14px; }
+    .recommendation {
+      background: #17211b;
+      border: 1px solid #234230;
+      color: #7ee787;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
     .warning {
       padding: 15px;
       border: 1px solid #5a4b20;
@@ -51,7 +85,7 @@
       border-radius: 10px;
       color: #d9c67a;
     }
-    .error { color: #ff8d8d; }
+    .error { color: #ff8d8d; background: #221414; border-color: #522525; }
     footer { padding: 25px 20px; color: #667085; font-size: 11px; text-align: center; }
   </style>
 </head>
@@ -59,9 +93,12 @@
 <body>
 
 <header>
-  <h1>KALE — Live Monitor</h1>
-  <div class="sub">
-    GOALDIR Football API v2 · KALE prediction engine
+  <div>
+    <h1>KALE — Live Monitor</h1>
+    <div class="sub">GOALDIR Football API v2 · KALE Prediction Engine</div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-refresh" onclick="loadData()">🔄 Verileri Yenile</button>
   </div>
 </header>
 
@@ -70,32 +107,32 @@
   <div class="grid">
     <div class="card">
       <div class="label">ENGINE STATUS</div>
-      <div class="value" id="status">Online</div>
+      <div class="value" id="status">Bağlanıyor...</div>
     </div>
     <div class="card">
-      <div class="label">UPCOMING MATCHES</div>
+      <div class="label">TOPLAM MAÇ</div>
       <div class="value" id="matchCount">0</div>
     </div>
     <div class="card">
-      <div class="label">HISTORICAL MATCHES</div>
+      <div class="label">GEÇMİŞ MAÇLAR</div>
       <div class="value" id="historyCount">0</div>
     </div>
     <div class="card">
-      <div class="label">LAST UPDATE</div>
-      <div class="value" id="updated">—</div>
+      <div class="label">SON GÜNCELLEME</div>
+      <div class="value" id="updated" style="font-size: 14px; margin-top: 4px;">—</div>
     </div>
   </div>
 
   <div id="message"></div>
 
-  <h2>KALE Predictions & Fixtures</h2>
+  <h2 style="font-size: 18px; margin-top: 25px;">KALE Tahminleri ve Fikstür</h2>
 
   <div id="matches"></div>
 
 </main>
 
 <footer>
-  KALE monitoring interface
+  KALE automated monitoring interface
 </footer>
 
 <script>
@@ -107,41 +144,41 @@ async function loadData() {
   const matches = document.getElementById("matches");
   const message = document.getElementById("message");
 
+  status.textContent = "Güncelleniyor...";
+
   try {
-    // Flask sunucusu üzerinden veya statik dosya olarak çağırın
     const response = await fetch("./data/latest.json?t=" + Date.now());
 
     if (!response.ok) {
-      throw new Error("latest.json could not be loaded. Run python app.py --run first.");
+      throw new Error("latest.json yüklenemedi. Arka plan motorunun veriyi üretmesi bekleniyor.");
     }
 
     const data = await response.json();
 
-    status.textContent = data.prediction_engine ? "Active (" + data.prediction_engine + ")" : "Running";
+    status.textContent = data.prediction_engine ? "Aktif (" + data.prediction_engine + ")" : "Çalışıyor";
 
-    // Backend'den gelen doğru anahtar: "fixtures"
-    const list = Array.isArray(data.fixtures) ? data.fixtures : [];
+    const list = Array.isArray(data.fixtures) ? data.fixtures : (Array.isArray(data.matches) ? data.matches : []);
 
     matchCount.textContent = list.length;
     historyCount.textContent = data.historical_matches || 0;
 
     updated.textContent = data.generated_at
-      ? new Date(data.generated_at).toLocaleString()
+      ? new Date(data.generated_at).toLocaleTimeString()
       : "—";
 
     message.innerHTML = "";
     matches.innerHTML = "";
 
     if (!list.length) {
-      matches.innerHTML = '<div class="warning">No verified KALE prediction data available yet.</div>';
+      matches.innerHTML = '<div class="warning">Henüz doğrulanmış bir KALE tahmin verisi bulunamadı veya liste boş.</div>';
       return;
     }
 
     list.forEach(function(match) {
-      const home = match.home || "—";
-      const away = match.away || "—";
+      const home = match.home || match.home_team || "—";
+      const away = match.away || match.away_team || "—";
       const league = match.league_name || match.league || "—";
-      const kickoff = match.date || "—";
+      const kickoff = match.date || match.kickoff || "—";
       const prediction = match.prediction || {};
       const probs = prediction.probabilities || {};
 
@@ -149,25 +186,42 @@ async function loadData() {
       card.className = "match";
 
       let predHtml = "";
-      if (!prediction.available) {
-        escapeHtml(prediction.reason || "insufficient evidence")
-        predHtml = `<div class="error">Prediction withheld: ${escapeHtml(prediction.reason || "insufficient evidence")}</div>`;
+      if (prediction.available === false) {
+        predHtml = `<div class="error" style="padding: 10px; border-radius: 6px;">Tahmin oluşturulamadı: ${escapeHtml(prediction.reason || "Yetersiz veri")}</div>`;
       } else {
+        // Hangi tarafın kazanma ihtimali yüksek bulalım (Tavsiye üretelim)
+        let recommendationText = "Analiz ediliyor...";
+        const hProb = Number(probs.home) || Number(match.home_probability) || 0;
+        const dProb = Number(probs.draw) || Number(match.draw_probability) || 0;
+        const aProb = Number(probs.away) || Number(match.away_probability) || 0;
+
+        if (hProb > 0 || dProb > 0 || aProb > 0) {
+          const maxP = Math.max(hProb, dProb, aProb);
+          if (maxP === hProb) recommendationText = `🏆 KALE Tavsiyesi: ${home} Kazanır (MS 1)`;
+          else if (maxP === aProb) recommendationText = `🏆 KALE Tavsiyesi: ${away} Kazanır (MS 2)`;
+          else recommendationText = `🏆 KALE Tavsiyesi: Beraberlik (MS X)`;
+        } else if (prediction.most_likely) {
+          recommendationText = `🏆 En Muhtemel Skor: ${prediction.most_likely}`;
+        }
+
         predHtml = `
-          <div>
-            <strong>Most likely score:</strong> ${escapeHtml(prediction.most_likely || "—")}
+          <div class="recommendation">
+            ${recommendationText}
           </div>
           <div>
-            <strong>Home probability:</strong> ${formatPercent(probs.home)}
+            <strong>En Muhtemel Skor:</strong> ${escapeHtml(prediction.most_likely || match.most_likely || "—")}
           </div>
           <div>
-            <strong>Draw probability:</strong> ${formatPercent(probs.draw)}
+            <strong>Ev Sahibi Kazanma:</strong> ${formatPercent(hProb)}
           </div>
           <div>
-            <strong>Away probability:</strong> ${formatPercent(probs.away)}
+            <strong>Beraberlik:</strong> ${formatPercent(dProb)}
           </div>
           <div>
-            <strong>Model Confidence:</strong> ${formatPercent(prediction.confidence)}
+            <strong>Deplasman Kazanma:</strong> ${formatPercent(aProb)}
+          </div>
+          <div>
+            <strong>Model Güveni:</strong> ${formatPercent(prediction.confidence)}
           </div>
         `;
       }
@@ -188,7 +242,7 @@ async function loadData() {
     });
 
   } catch (error) {
-    status.textContent = "error";
+    status.textContent = "Hata";
     message.innerHTML = '<div class="warning error">' + escapeHtml(error.message) + '</div>';
   }
 }
@@ -196,7 +250,9 @@ async function loadData() {
 function formatPercent(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) { return "—"; }
-  return (n * 100).toFixed(1) + "%";
+  // Eğer değer 0-1 arası değilse (örneğin direkt yüzde verilmişse) düzeltme
+  const formatted = n > 1 ? n : n * 100;
+  return formatted.toFixed(1) + "%";
 }
 
 function escapeHtml(value) {
@@ -208,7 +264,10 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+// Sayfa açıldığında otomatik yükle
 loadData();
+
+// Her 30 saniyede bir otomatik arka planda verileri tazele
 setInterval(loadData, 30000);
 </script>
 
