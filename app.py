@@ -566,8 +566,16 @@ runEngine();
 </html>
 """
 
+# ============================================================
+# START
+# ============================================================
 if __name__ == "__main__":
     if not API_KEY:
         print("ERROR: GOALDIR_API_KEY / BSD_API_KEY is not set.")
         raise SystemExit(1)
-    app.run(host="0.0.0.0", PORT=PORT, debug=False)
+    app.run(
+        host="0.0.0.0",
+        port=PORT,  # Burada PORT yerine küçük harf port olmalıydı
+        debug=False,
+    )
+    
