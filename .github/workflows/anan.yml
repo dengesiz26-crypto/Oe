@@ -1,0 +1,84 @@
+name: Unzip and deploy project archive
+
+# Runs whenever a .zip file is pushed to the repo root (e.g. you drag-and-drop
+# ai-football-predictor.zip into GitHub's web UI and commit it to main).
+# It extracts the archive, moves its contents into the repo root, deletes the
+# zip, and commits the result â€” so the zip itself never has to be unpacked by hand.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.zip"
+  workflow_dispatch:
+    inputs:
+      zip_name:
+        description: "Name of the zip file in the repo root to extract (optional, leave blank to auto-detect)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  unzip-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find the zip file
+        id: findzip
+        run: |
+          if [ -n "${{ github.event.inputs.zip_name }}" ]; then
+            ZIP_FILE="${{ github.event.inputs.zip_name }}"
+          else
+            # Pick the most recently modified .zip in the repo root
+            ZIP_FILE=$(ls -t ./*.zip 2>/dev/null | head -n1 | xargs -n1 basename || true)
+          fi
+
+          if [ -z "$ZIP_FILE" ] || [ ! -f "$ZIP_FILE" ]; then
+            echo "No zip file found in repo root. Nothing to do."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Found zip: $ZIP_FILE"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "zip_file=$ZIP_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Extract archive into repo root
+        if: steps.findzip.outputs.found == 'true'
+        run: |
+          ZIP_FILE="${{ steps.findzip.outputs.zip_file }}"
+          WORKDIR=$(mktemp -d)
+
+          unzip -q "$ZIP_FILE" -d "$WORKDIR"
+
+          # If the archive contains a single top-level folder (e.g.
+          # "ai-football-predictor/"), unwrap it so its *contents* land in
+          # the repo root instead of nesting everything one level deeper.
+          ENTRIES=$(ls -A "$WORKDIR")
+          ENTRY_COUNT=$(echo "$ENTRIES" | wc -l)
+          if [ "$ENTRY_COUNT" -eq 1 ] && [ -d "$WORKDIR/$ENTRIES" ]; then
+            SRC="$WORKDIR/$ENTRIES"
+          else
+            SRC="$WORKDIR"
+          fi
+
+          # Copy everything (including dotfiles like .github, .gitignore)
+          # into the repo root, overwriting matching paths.
+          cp -a "$SRC"/. ./
+
+          rm -rf "$WORKDIR"
+          rm -f "$ZIP_FILE"
+
+      - name: Commit and push extracted files
+        if: steps.findzip.outputs.found == 'true'
+        run: |
+          git config user.name "zip-deploy-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --quiet --cached || git commit -m "chore: extract and deploy ${{ steps.findzip.outputs.zip_file }}"
+          git push
