@@ -1,7 +1,7 @@
 {
   "prediction_engine": true,
-  "generated_at": "2026-09-25T08:18:42.654453+00:00",
-  "historical_matches": 50059,
+  "generated_at": "2026-09-25T19:48:07.402161+00:00",
+  "historical_matches": 50066,
   "upcoming_matches": 50,
   "stats": {
     "wins": 24,
@@ -68,13 +68,13 @@
         "lambda_away": 0.97,
         "most_likely": "0-0",
         "probabilities": {
-          "home": 0.3508162628213909,
-          "draw": 0.32996899908367683,
-          "away": 0.3192147380949325,
-          "over25": 0.32325835079814863,
-          "under25": 0.6767416492018514,
-          "bttsYes": 0.4100032063309344,
-          "bttsNo": 0.5899967936690655
+          "home": 0.35080724752269365,
+          "draw": 0.3299695361590618,
+          "away": 0.3192232163182444,
+          "over25": 0.3232574844896187,
+          "under25": 0.6767425155103812,
+          "bttsYes": 0.41000284366139567,
+          "bttsNo": 0.5899971563386044
         },
         "confidence": 0.5751,
         "reason": "Ev sahibi form/hücum (λ=1.03), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 0-0 öngörülmüştür."
@@ -158,13 +158,13 @@
         "lambda_away": 1.1,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.3844084816199793,
-          "draw": 0.3009326056360098,
-          "away": 0.31465891274401075,
-          "over25": 0.4144812601803853,
-          "under25": 0.5855187398196147,
-          "bttsYes": 0.4844855314591757,
-          "bttsNo": 0.5155144685408243
+          "home": 0.38440418899614265,
+          "draw": 0.30093300799388273,
+          "away": 0.3146628030099742,
+          "over25": 0.41448065116498645,
+          "under25": 0.5855193488350136,
+          "bttsYes": 0.48448541924560584,
+          "bttsNo": 0.5155145807543942
         },
         "confidence": 0.6135,
         "reason": "Ev sahibi form/hücum (λ=1.24), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -308,13 +308,13 @@
         "lambda_away": 0.91,
         "most_likely": "2-0",
         "probabilities": {
-          "home": 0.6778523019649011,
-          "draw": 0.19512103513727613,
-          "away": 0.12702666289782277,
-          "over25": 0.6194355857937526,
-          "under25": 0.3805644142062474,
-          "bttsYes": 0.5426905945500338,
-          "bttsNo": 0.45730940544996623
+          "home": 0.6778532344739922,
+          "draw": 0.1951206386564544,
+          "away": 0.12702612686955353,
+          "over25": 0.6194360104663577,
+          "under25": 0.38056398953364234,
+          "bttsYes": 0.5426903006653412,
+          "bttsNo": 0.4573096993346588
         },
         "confidence": 0.7253,
         "reason": "Ev sahibi form/hücum (λ=2.29), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 2-0 öngörülmüştür."
@@ -398,15 +398,15 @@
         "lambda_away": 1.16,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.35856791143726907,
-          "draw": 0.3002761594570668,
-          "away": 0.3411559291056641,
-          "over25": 0.4201197738450813,
-          "under25": 0.5798802261549187,
-          "bttsYes": 0.49053429675745885,
-          "bttsNo": 0.5094657032425411
+          "home": 0.3585247505338296,
+          "draw": 0.3002774237471212,
+          "away": 0.341197825719049,
+          "over25": 0.420117374506715,
+          "under25": 0.579882625493285,
+          "bttsYes": 0.49053334334677645,
+          "bttsNo": 0.5094666566532235
         },
-        "confidence": 0.5992,
+        "confidence": 0.5991,
         "reason": "Ev sahibi form/hücum (λ=1.20), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
       }
     },
@@ -428,13 +428,13 @@
         "lambda_away": 1.24,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.36015821269614084,
-          "draw": 0.2902598609190356,
-          "away": 0.34958192638482366,
-          "over25": 0.4572807435483659,
-          "under25": 0.5427192564516341,
-          "bttsYes": 0.5201659081026168,
-          "bttsNo": 0.47983409189738324
+          "home": 0.3601948556780247,
+          "draw": 0.2902589219923468,
+          "away": 0.3495462223296284,
+          "over25": 0.45728316877892233,
+          "under25": 0.5427168312210777,
+          "bttsYes": 0.5201673256810206,
+          "bttsNo": 0.47983267431897936
         },
         "confidence": 0.6076,
         "reason": "Ev sahibi form/hücum (λ=1.26), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -458,15 +458,15 @@
         "lambda_away": 1.03,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.5589115484865302,
-          "draw": 0.24219683517086413,
-          "away": 0.19889161634260552,
-          "over25": 0.5531399090633766,
-          "under25": 0.4468600909366234,
-          "bttsYes": 0.552849664238042,
-          "bttsNo": 0.44715033576195795
+          "home": 0.5589962063332883,
+          "draw": 0.2421718181281825,
+          "away": 0.19883197553852897,
+          "over25": 0.5531630674507266,
+          "under25": 0.44683693254927337,
+          "bttsYes": 0.5528323867452984,
+          "bttsNo": 0.44716761325470156
         },
-        "confidence": 0.7247,
+        "confidence": 0.7248,
         "reason": "Ev sahibi form/hücum (λ=1.86), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
       }
     },
@@ -531,6 +531,36 @@
       }
     },
     {
+      "id": 604982,
+      "home": "Jordan",
+      "away": "Syria",
+      "home_id": 484,
+      "away_id": 2214,
+      "league_name": "",
+      "league": "other",
+      "date": null,
+      "status": "notstarted",
+      "home_score": null,
+      "away_score": null,
+      "prediction": {
+        "available": true,
+        "lambda_home": 1.79,
+        "lambda_away": 1.24,
+        "most_likely": "1-1",
+        "probabilities": {
+          "home": 0.49547358791357854,
+          "draw": 0.2488011059547568,
+          "away": 0.25572530613166455,
+          "over25": 0.5843387732076929,
+          "under25": 0.4156612267923071,
+          "bttsYes": 0.6009614790571709,
+          "bttsNo": 0.3990385209428291
+        },
+        "confidence": 0.6804,
+        "reason": "Ev sahibi form/hücum (λ=1.79), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
+      }
+    },
+    {
       "id": 604450,
       "home": "Malta",
       "away": "Liechtenstein",
@@ -548,13 +578,13 @@
         "lambda_away": 1.0,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.5595795392124481,
-          "draw": 0.2454975362933336,
-          "away": 0.1949229244942181,
-          "over25": 0.5351896205781421,
-          "under25": 0.4648103794218579,
-          "bttsYes": 0.537329561845077,
-          "bttsNo": 0.46267043815492304
+          "home": 0.5596087831477105,
+          "draw": 0.2454886426019859,
+          "away": 0.19490257425030355,
+          "over25": 0.5351979480092703,
+          "under25": 0.46480205199072966,
+          "bttsYes": 0.5373235635132391,
+          "bttsNo": 0.46267643648676093
         },
         "confidence": 0.7287,
         "reason": "Ev sahibi form/hücum (λ=1.82), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -578,13 +608,13 @@
         "lambda_away": 0.89,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.4274431727799289,
-          "draw": 0.3141591615552809,
-          "away": 0.2583976656647901,
-          "over25": 0.3532902451966624,
-          "under25": 0.6467097548033376,
-          "bttsYes": 0.425970290596706,
-          "bttsNo": 0.574029709403294
+          "home": 0.4274431723557997,
+          "draw": 0.3141591616348482,
+          "away": 0.25839766600935193,
+          "over25": 0.3532902451202165,
+          "under25": 0.6467097548797835,
+          "bttsYes": 0.4259702906231403,
+          "bttsNo": 0.5740297093768597
         },
         "confidence": 0.6271,
         "reason": "Ev sahibi form/hücum (λ=1.22), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -719,13 +749,13 @@
         "lambda_away": 0.93,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.5008886962384752,
-          "draw": 0.2781050081926696,
-          "away": 0.22100629556885512,
-          "over25": 0.4438746584245926,
-          "under25": 0.5561253415754074,
-          "bttsYes": 0.48315885127879116,
-          "bttsNo": 0.5168411487212088
+          "home": 0.5008651102076574,
+          "draw": 0.278111401640382,
+          "away": 0.22102348815196024,
+          "over25": 0.4438678840282004,
+          "under25": 0.5561321159717996,
+          "bttsYes": 0.4831613735043733,
+          "bttsNo": 0.5168386264956266
         },
         "confidence": 0.6893,
         "reason": "Ev sahibi form/hücum (λ=1.52), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -749,13 +779,13 @@
         "lambda_away": 0.71,
         "most_likely": "2-0",
         "probabilities": {
-          "home": 0.6478486700435817,
-          "draw": 0.22809031752286396,
-          "away": 0.12406101243355401,
-          "over25": 0.4821077540213461,
-          "under25": 0.5178922459786539,
-          "bttsYes": 0.43892062226833256,
-          "bttsNo": 0.5610793777316674
+          "home": 0.6477982113794768,
+          "draw": 0.22811325258192786,
+          "away": 0.12408853603859576,
+          "over25": 0.4820827750395355,
+          "under25": 0.5179172249604644,
+          "bttsYes": 0.4389345847945106,
+          "bttsNo": 0.5610654152054895
         },
         "confidence": 0.7851,
         "reason": "Ev sahibi form/hücum (λ=1.89), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 2-0 öngörülmüştür."
@@ -779,13 +809,13 @@
         "lambda_away": 0.87,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.5356659682975657,
-          "draw": 0.26909656750068983,
-          "away": 0.19523746420174398,
-          "over25": 0.4490544840169709,
-          "under25": 0.5509455159830291,
-          "bttsYes": 0.47395981451585484,
-          "bttsNo": 0.5260401854841452
+          "home": 0.5356919353112616,
+          "draw": 0.26908852422323937,
+          "away": 0.19521954046549891,
+          "over25": 0.449062042638898,
+          "under25": 0.550937957361102,
+          "bttsYes": 0.47395511542818564,
+          "bttsNo": 0.5260448845718144
         },
         "confidence": 0.7112,
         "reason": "Ev sahibi form/hücum (λ=1.60), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -809,13 +839,13 @@
         "lambda_away": 1.62,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.3582673874711036,
-          "draw": 0.2523372139748596,
-          "away": 0.3893953985540368,
-          "over25": 0.6133984637978058,
-          "under25": 0.3866015362021942,
-          "bttsYes": 0.6399830234580721,
-          "bttsNo": 0.3600169765419279
+          "home": 0.35827393229629334,
+          "draw": 0.25233728985165266,
+          "away": 0.38938877785205417,
+          "over25": 0.6133987599039062,
+          "under25": 0.38660124009609376,
+          "bttsYes": 0.6399834799224925,
+          "bttsNo": 0.3600165200775075
         },
         "confidence": 0.611,
         "reason": "Ev sahibi form/hücum (λ=1.55), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -1104,13 +1134,13 @@
         "lambda_away": 0.95,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.5350030809630566,
-          "draw": 0.26079236881399914,
-          "away": 0.20420455022294426,
-          "over25": 0.48865966488243584,
-          "under25": 0.5113403351175642,
-          "bttsYes": 0.5083072248029176,
-          "bttsNo": 0.49169277519708243
+          "home": 0.5350030814559671,
+          "draw": 0.26079236866724603,
+          "away": 0.20420454987678716,
+          "over25": 0.48865966503393876,
+          "under25": 0.5113403349660612,
+          "bttsYes": 0.5083072247289394,
+          "bttsNo": 0.4916927752710606
         },
         "confidence": 0.7187,
         "reason": "Ev sahibi form/hücum (λ=1.68), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
@@ -1296,46 +1326,16 @@
         "lambda_away": 0.96,
         "most_likely": "1-1",
         "probabilities": {
-          "home": 0.41110602552917763,
-          "draw": 0.31088506737935095,
-          "away": 0.27800890709147125,
-          "over25": 0.3713045419311287,
-          "under25": 0.6286954580688713,
-          "bttsYes": 0.44480917970150347,
-          "bttsNo": 0.5551908202984965
+          "home": 0.4110978641018895,
+          "draw": 0.3108862891555771,
+          "away": 0.2780158467425332,
+          "over25": 0.3713032985169196,
+          "under25": 0.6286967014830804,
+          "bttsYes": 0.4448095275068242,
+          "bttsNo": 0.5551904724931758
         },
         "confidence": 0.6209,
         "reason": "Ev sahibi form/hücum (λ=1.22), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
-      }
-    },
-    {
-      "id": 604950,
-      "home": "Seychelles",
-      "away": "Sri Lanka",
-      "home_id": 2272,
-      "away_id": 2289,
-      "league_name": "",
-      "league": "other",
-      "date": null,
-      "status": "notstarted",
-      "home_score": null,
-      "away_score": null,
-      "prediction": {
-        "available": true,
-        "lambda_home": 1.17,
-        "lambda_away": 1.62,
-        "most_likely": "1-1",
-        "probabilities": {
-          "home": 0.26520307608247157,
-          "draw": 0.26455503030716165,
-          "away": 0.4702418936103669,
-          "over25": 0.5281905581498012,
-          "under25": 0.4718094418501988,
-          "bttsYes": 0.5622018975934289,
-          "bttsNo": 0.43779810240657113
-        },
-        "confidence": 0.554,
-        "reason": "Ev sahibi form/hücum (λ=1.17), deplasman savunma zayıflığına karşı üstün. Son 10 maçlık veriler, Elo dereceleri ve Dixon-Coles Poisson dağılımı baz alınarak skor 1-1 öngörülmüştür."
       }
     }
   ]
