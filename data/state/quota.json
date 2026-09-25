@@ -1,9 +1,9 @@
 {
   "goaldir": {
     "date": "2026-09-25",
-    "daily_used": 2,
+    "daily_used": 4,
     "minute_used": 2,
-    "minute_window_start": 1790376048.8166497,
+    "minute_window_start": 1790376382.1846006,
     "consecutive_429": 0,
     "circuit_open_until": 0
   },
