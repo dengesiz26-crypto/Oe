@@ -1,9 +1,33 @@
 {
-  "generated_at": "2026-09-25T08:00:00+00:00",
+  "generated_at": "2026-09-25T22:40:50.401203+00:00",
   "providers": [
-    {"provider": "goaldir", "daily_used": 41, "minute_used": 0, "consecutive_429": 0, "circuit_open": false},
-    {"provider": "odds_api", "daily_used": 18, "minute_used": 0, "consecutive_429": 0, "circuit_open": false},
-    {"provider": "api_football", "daily_used": 9, "minute_used": 1, "consecutive_429": 0, "circuit_open": false},
-    {"provider": "sportapi", "daily_used": 3, "minute_used": 0, "consecutive_429": 0, "circuit_open": false}
+    {
+      "provider": "goaldir",
+      "daily_used": 2,
+      "minute_used": 2,
+      "consecutive_429": 0,
+      "circuit_open": false
+    },
+    {
+      "provider": "odds_api",
+      "daily_used": 0,
+      "minute_used": 0,
+      "consecutive_429": 0,
+      "circuit_open": false
+    },
+    {
+      "provider": "api_football",
+      "daily_used": 0,
+      "minute_used": 0,
+      "consecutive_429": 0,
+      "circuit_open": false
+    },
+    {
+      "provider": "sportapi",
+      "daily_used": 0,
+      "minute_used": 0,
+      "consecutive_429": 0,
+      "circuit_open": false
+    }
   ]
 }

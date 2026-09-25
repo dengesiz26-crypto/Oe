@@ -1,17 +1,7 @@
 {
-  "generated_at": "2026-09-25T08:00:00+00:00",
+  "generated_at": "2026-09-25T22:40:50.401203+00:00",
   "report": {
-    "n": 214,
-    "brier": 0.187,
-    "log_loss": 0.552,
-    "ece": 0.041,
-    "roi": 0.063,
-    "hit_rate": 0.612,
-    "per_market": {
-      "over_1_5": {"n": 58, "hit_rate": 0.741, "brier": 0.163},
-      "1x2_home": {"n": 71, "hit_rate": 0.577, "brier": 0.201},
-      "under_2_5": {"n": 39, "hit_rate": 0.589, "brier": 0.212},
-      "btts_yes": {"n": 46, "hit_rate": 0.522, "brier": 0.229}
-    }
+    "n": 0,
+    "note": "no settled episodes yet"
   }
 }
