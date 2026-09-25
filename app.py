@@ -53,32 +53,7 @@ if API_KEY:
         "Accept": "application/json",
     })
 
-if __name__ == "__main__":
-    import sys
 
-    if "--run" in sys.argv:
-        result = run_engine()
-
-        os.makedirs("data", exist_ok=True)
-
-        with open(
-            "data/latest.json",
-            "w",
-            encoding="utf-8",
-        ) as f:
-            json.dump(
-                result,
-                f,
-                ensure_ascii=False,
-                indent=2,
-            )
-
-    else:
-        app.run(
-            host="0.0.0.0",
-            port=5000,
-            debug=False,
-        )
 # ============================================================
 # FLASK
 # ============================================================
@@ -2711,13 +2686,39 @@ setInterval(
 
 if __name__ == "__main__":
 
+    import sys
+
     if not API_KEY:
         print(
             "ERROR: GOALDIR_API_KEY is not set."
         )
 
-    app.run(
-        host="0.0.0.0",
-        port=PORT,
-        debug=False,
-    )
+    if "--run" in sys.argv:
+
+        result = run_engine()
+
+        os.makedirs(
+            "data",
+            exist_ok=True,
+        )
+
+        with open(
+            "data/latest.json",
+            "w",
+            encoding="utf-8",
+        ) as f:
+
+            json.dump(
+                result,
+                f,
+                ensure_ascii=False,
+                indent=2,
+            )
+
+    else:
+
+        app.run(
+            host="0.0.0.0",
+            port=PORT,
+            debug=False,
+        )
