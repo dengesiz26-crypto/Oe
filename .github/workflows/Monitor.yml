@@ -1,7 +1,10 @@
-name: KALE Live Monitor
+name: KALE Live Monitor & Engine
 
 on:
   workflow_dispatch:
+  schedule:
+    # Her saat başı çalışır (İsteğinize göre değiştirebilirsiniz, örn: '*/30 * * * *' 30 dakikada bir)
+    - cron: '0 * * * *'
 
 permissions:
   contents: write
@@ -9,7 +12,7 @@ permissions:
   id-token: write
 
 jobs:
-  setup-monitor:
+  run-kale-engine:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,421 +24,39 @@ jobs:
         with:
           python-version: "3.12"
 
-      # ---------------------------------------------------------
-      # Create temporary monitoring files
-      # ---------------------------------------------------------
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Create monitor directories
-        shell: bash
+      - name: Ensure directories exist
         run: |
           mkdir -p data
           mkdir -p docs
 
       # ---------------------------------------------------------
-      # Create empty initial JSON
-      # The real KALE engine will replace this file.
-      # No fake prediction data is inserted.
+      # KALE Python Motorunu Çalıştırın
+      # (Python dosyanızın adı neyse buradaki komutu ona göre güncelleyin)
       # ---------------------------------------------------------
-
-      - name: Create initial latest.json
-        shell: bash
+      - name: Run KALE Prediction Engine
+        env:
+          GOALDIR_API_KEY: ${{ secrets.GOALDIR_API_KEY }} # Eğer API anahtarınız varsa Secret olarak ekleyebilirsiniz
         run: |
-          cat > data/latest.json <<'JSON'
-          {
-            "status": "waiting",
-            "source": "GOALDIR Football API v2",
-            "prediction_engine": "KALE",
-            "generated_at": null,
-            "matches": [],
-            "predictions": [],
-            "message": "Waiting for KALE engine output."
-          }
-          JSON
+          python app.py --run
 
       # ---------------------------------------------------------
-      # Create temporary GitHub Pages dashboard
+      # Güncellenen verileri GitHub'a otomatik commit & push yap
       # ---------------------------------------------------------
-
-      - name: Create temporary dashboard
-        shell: bash
-        run: |
-          cat > docs/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>KALE — Live Monitor</title>
-
-            <style>
-              * {
-                box-sizing: border-box;
-              }
-
-              body {
-                margin: 0;
-                background: #0a0c10;
-                color: #e8edf5;
-                font-family: Arial, sans-serif;
-              }
-
-              header {
-                padding: 20px;
-                border-bottom: 1px solid #242936;
-              }
-
-              h1 {
-                margin: 0 0 6px;
-                font-size: 24px;
-              }
-
-              .sub {
-                color: #8993a5;
-                font-size: 13px;
-              }
-
-              main {
-                max-width: 1100px;
-                margin: auto;
-                padding: 20px;
-              }
-
-              .grid {
-                display: grid;
-                grid-template-columns:
-                  repeat(auto-fit,minmax(180px,1fr));
-                gap: 12px;
-                margin-bottom: 20px;
-              }
-
-              .card {
-                background: #12151c;
-                border: 1px solid #242936;
-                border-radius: 12px;
-                padding: 16px;
-              }
-
-              .label {
-                color: #8993a5;
-                font-size: 12px;
-                margin-bottom: 8px;
-              }
-
-              .value {
-                font-size: 22px;
-                font-weight: bold;
-              }
-
-              #matches {
-                display: grid;
-                gap: 12px;
-              }
-
-              .match {
-                background: #12151c;
-                border: 1px solid #242936;
-                border-radius: 12px;
-                padding: 16px;
-              }
-
-              .teams {
-                font-size: 18px;
-                font-weight: bold;
-                margin-bottom: 10px;
-              }
-
-              .meta {
-                color: #8993a5;
-                font-size: 12px;
-                margin-bottom: 12px;
-              }
-
-              .prediction {
-                border-top: 1px solid #242936;
-                padding-top: 12px;
-                line-height: 1.7;
-              }
-
-              .warning {
-                padding: 15px;
-                border: 1px solid #5a4b20;
-                background: #17150d;
-                border-radius: 10px;
-                color: #d9c67a;
-              }
-
-              .error {
-                color: #ff8d8d;
-              }
-
-              footer {
-                padding: 25px 20px;
-                color: #667085;
-                font-size: 11px;
-                text-align: center;
-              }
-            </style>
-          </head>
-
-          <body>
-
-          <header>
-            <h1>KALE — Live Monitor</h1>
-            <div class="sub">
-              GOALDIR Football API v2 · KALE own prediction engine
-            </div>
-          </header>
-
-          <main>
-
-            <div class="grid">
-
-              <div class="card">
-                <div class="label">ENGINE STATUS</div>
-                <div class="value" id="status">—</div>
-              </div>
-
-              <div class="card">
-                <div class="label">MATCHES</div>
-                <div class="value" id="matchCount">0</div>
-              </div>
-
-              <div class="card">
-                <div class="label">PREDICTIONS</div>
-                <div class="value" id="predictionCount">0</div>
-              </div>
-
-              <div class="card">
-                <div class="label">LAST UPDATE</div>
-                <div class="value" id="updated">—</div>
-              </div>
-
-            </div>
-
-            <div id="message"></div>
-
-            <h2>KALE Predictions</h2>
-
-            <div id="matches"></div>
-
-          </main>
-
-          <footer>
-            KALE monitoring interface
-          </footer>
-
-          <script>
-          async function loadData() {
-
-            const status = document.getElementById("status");
-            const matchCount = document.getElementById("matchCount");
-            const predictionCount =
-              document.getElementById("predictionCount");
-
-            const updated = document.getElementById("updated");
-            const matches = document.getElementById("matches");
-            const message = document.getElementById("message");
-
-            try {
-
-              const response =
-                await fetch("./data/latest.json?t=" + Date.now());
-
-              if (!response.ok) {
-                throw new Error("latest.json could not be loaded");
-              }
-
-              const data = await response.json();
-
-              status.textContent =
-                data.status || "unknown";
-
-              const list =
-                Array.isArray(data.matches)
-                  ? data.matches
-                  : [];
-
-              const predictions =
-                Array.isArray(data.predictions)
-                  ? data.predictions
-                  : [];
-
-              matchCount.textContent =
-                list.length;
-
-              predictionCount.textContent =
-                predictions.length;
-
-              updated.textContent =
-                data.generated_at
-                  ? new Date(data.generated_at).toLocaleString()
-                  : "—";
-
-              message.innerHTML = "";
-
-              if (data.message) {
-                message.innerHTML =
-                  '<div class="warning">' +
-                  escapeHtml(data.message) +
-                  '</div>';
-              }
-
-              matches.innerHTML = "";
-
-              if (!list.length) {
-
-                matches.innerHTML =
-                  '<div class="warning">' +
-                  'No verified KALE prediction data available yet.' +
-                  '</div>';
-
-                return;
-              }
-
-              list.forEach(function(match) {
-
-                const home =
-                  match.home || match.home_team || "—";
-
-                const away =
-                  match.away || match.away_team || "—";
-
-                const league =
-                  match.league || "—";
-
-                const kickoff =
-                  match.kickoff || match.date || "—";
-
-                const prediction =
-                  match.prediction || {};
-
-                const card =
-                  document.createElement("div");
-
-                card.className = "match";
-
-                card.innerHTML = `
-                  <div class="teams">
-                    ${escapeHtml(home)}
-                    vs
-                    ${escapeHtml(away)}
-                  </div>
-
-                  <div class="meta">
-                    ${escapeHtml(league)}
-                    ·
-                    ${escapeHtml(kickoff)}
-                  </div>
-
-                  <div class="prediction">
-
-                    <div>
-                      <strong>Most likely score:</strong>
-                      ${escapeHtml(
-                        prediction.most_likely_score ||
-                        match.most_likely ||
-                        "—"
-                      )}
-                    </div>
-
-                    <div>
-                      <strong>Home probability:</strong>
-                      ${formatPercent(
-                        prediction.home_probability ??
-                        match.home_probability
-                      )}
-                    </div>
-
-                    <div>
-                      <strong>Draw probability:</strong>
-                      ${formatPercent(
-                        prediction.draw_probability ??
-                        match.draw_probability
-                      )}
-                    </div>
-
-                    <div>
-                      <strong>Away probability:</strong>
-                      ${formatPercent(
-                        prediction.away_probability ??
-                        match.away_probability
-                      )}
-                    </div>
-
-                  </div>
-                `;
-
-                matches.appendChild(card);
-
-              });
-
-            } catch (error) {
-
-              status.textContent = "error";
-
-              message.innerHTML =
-                '<div class="warning error">' +
-                escapeHtml(error.message) +
-                '</div>';
-            }
-          }
-
-          function formatPercent(value) {
-
-            const n = Number(value);
-
-            if (!Number.isFinite(n)) {
-              return "—";
-            }
-
-            return (n * 100).toFixed(1) + "%";
-          }
-
-          function escapeHtml(value) {
-
-            return String(value)
-              .replaceAll("&", "&amp;")
-              .replaceAll("<", "&lt;")
-              .replaceAll(">", "&gt;")
-              .replaceAll('"', "&quot;")
-              .replaceAll("'", "&#039;");
-          }
-
-          loadData();
-
-          // Refresh the screen every 30 seconds.
-          setInterval(loadData, 30000);
-          </script>
-
-          </body>
-          </html>
-          HTML
-
-      # ---------------------------------------------------------
-      # Show what was created
-      # ---------------------------------------------------------
-
-      - name: Show created files
-        shell: bash
-        run: |
-          echo "Created temporary monitoring files:"
-          find data docs -maxdepth 2 -type f -print
-
-      # ---------------------------------------------------------
-      # Commit temporary files so GitHub Pages can display them.
-      # ---------------------------------------------------------
-
-      - name: Commit monitor files
-        shell: bash
+      - name: Commit and push latest data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
+          
           git add data/latest.json docs/index.html
 
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "No changes in prediction data."
           else
-            git commit -m "Add temporary KALE monitor"
+            git commit -m "Auto-update KALE live monitor data [skip ci]"
             git push
           fi
