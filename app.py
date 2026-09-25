@@ -578,12 +578,29 @@ def seasons(league_id):
         f"/leagues/{league_id}/seasons/"
     )
 
-    rows = extract_results(payload)
+    if isinstance(payload, dict):
+
+        rows = payload.get("seasons")
+
+        if isinstance(rows, list):
+            return rows
+
+        rows = payload.get("results")
+
+        if isinstance(rows, list):
+            return rows
+
+        rows = payload.get("data")
+
+        if isinstance(rows, list):
+            return rows
+
+        return []
 
     if isinstance(payload, list):
-        rows = payload
+        return payload
 
-    return rows
+    return []
 
 
 # ============================================================
