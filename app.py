@@ -140,7 +140,7 @@ def api_get(path, params=None):
 
 
 # ============================================================
-# PAGINATION
+# PAGINATION / RESPONSE PARSING
 # ============================================================
 
 def extract_results(payload):
@@ -156,6 +156,7 @@ def extract_results(payload):
         "events",
         "fixtures",
         "items",
+        "seasons",
     ):
         value = payload.get(key)
 
@@ -178,6 +179,7 @@ def fetch_all(path, params=None, max_pages=100):
     all_rows = []
 
     for page in range(max_pages):
+
         params["offset"] = page * limit
 
         payload = api_get(
@@ -291,6 +293,7 @@ LEAGUE_ALIASES = {
 
     "jupiler pro league": "proleague",
     "belgian pro league": "proleague",
+    "pro league": "proleague",
 
     "scottish premiership": "spl",
     "premiership": "spl",
@@ -381,11 +384,24 @@ def event_id(event):
 
 
 def event_home(event):
-    if isinstance(
-        event.get("home_team"),
-        dict,
-    ):
-        return event["home_team"].get("name")
+    home = event.get("home")
+
+    if isinstance(home, dict):
+        return (
+            home.get("name")
+            or home.get("short_name")
+        )
+
+    if home:
+        return home
+
+    home_team = event.get("home_team")
+
+    if isinstance(home_team, dict):
+        return (
+            home_team.get("name")
+            or home_team.get("short_name")
+        )
 
     return (
         event.get("home_team_name")
@@ -394,11 +410,24 @@ def event_home(event):
 
 
 def event_away(event):
-    if isinstance(
-        event.get("away_team"),
-        dict,
-    ):
-        return event["away_team"].get("name")
+    away = event.get("away")
+
+    if isinstance(away, dict):
+        return (
+            away.get("name")
+            or away.get("short_name")
+        )
+
+    if away:
+        return away
+
+    away_team = event.get("away_team")
+
+    if isinstance(away_team, dict):
+        return (
+            away_team.get("name")
+            or away_team.get("short_name")
+        )
 
     return (
         event.get("away_team_name")
@@ -407,23 +436,37 @@ def event_away(event):
 
 
 def event_home_id(event):
-    if isinstance(
-        event.get("home_team"),
-        dict,
-    ):
-        return event["home_team"].get("id")
+    home = event.get("home")
 
-    return event.get("home_team_id")
+    if isinstance(home, dict):
+        return home.get("id")
+
+    home_team = event.get("home_team")
+
+    if isinstance(home_team, dict):
+        return home_team.get("id")
+
+    return (
+        event.get("home_team_id")
+        or event.get("home_id")
+    )
 
 
 def event_away_id(event):
-    if isinstance(
-        event.get("away_team"),
-        dict,
-    ):
-        return event["away_team"].get("id")
+    away = event.get("away")
 
-    return event.get("away_team_id")
+    if isinstance(away, dict):
+        return away.get("id")
+
+    away_team = event.get("away_team")
+
+    if isinstance(away_team, dict):
+        return away_team.get("id")
+
+    return (
+        event.get("away_team_id")
+        or event.get("away_id")
+    )
 
 
 def event_league(event):
@@ -455,8 +498,8 @@ def event_league_id(event):
 def event_date(event):
     return (
         event.get("kickoff")
-        or event.get("date")
         or event.get("start_time")
+        or event.get("date")
         or event.get("datetime")
     )
 
@@ -476,8 +519,28 @@ def score(event, side):
         if isinstance(scores, dict):
             value = scores.get(side)
 
+    if value is None:
+        scores = event.get("scores")
+
+        if isinstance(scores, dict):
+            value = scores.get(side)
+
     try:
         if value is None:
+            return None
+
+        if isinstance(value, dict):
+            value = (
+                value.get("current")
+                or value.get("display")
+                or value.get("score")
+            )
+
+        if value in (
+            "",
+            "-",
+            None,
+        ):
             return None
 
         return int(value)
@@ -487,11 +550,16 @@ def score(event, side):
 
 
 def normalize_event(event):
+    if not isinstance(event, dict):
+        return None
+
     home = event_home(event)
     away = event_away(event)
 
     if not home or not away:
         return None
+
+    league_name = event_league(event)
 
     return {
         "id": event_id(event),
@@ -500,9 +568,9 @@ def normalize_event(event):
         "home_id": event_home_id(event),
         "away_id": event_away_id(event),
         "league_id": event_league_id(event),
-        "league_name": event_league(event),
+        "league_name": league_name,
         "league": league_match(
-            event_league(event)
+            league_name
         ),
         "date": event_date(event),
         "status": event.get("status"),
@@ -533,6 +601,10 @@ def load_leagues():
     result = []
 
     for row in rows:
+
+        if not isinstance(row, dict):
+            continue
+
         name = (
             row.get("name")
             or row.get("title")
@@ -562,6 +634,7 @@ def current_season(league_id):
     )
 
     if isinstance(payload, dict):
+
         if "id" in payload:
             return payload
 
@@ -608,6 +681,7 @@ def seasons(league_id):
 # ============================================================
 
 def load_history():
+
     leagues = load_leagues()
 
     history = []
@@ -616,9 +690,11 @@ def load_history():
 
         lid = league["id"]
 
+        if lid is None:
+            continue
+
         try:
             season_rows = seasons(lid)
-
         except Exception:
             continue
 
@@ -652,7 +728,6 @@ def load_history():
                     {
                         "league_id": lid,
                         "season_id": sid,
-                        "status": "finished",
                         "limit": 200,
                     },
                 )
@@ -672,6 +747,8 @@ def load_history():
                 hg = event["home_score"]
                 ag = event["away_score"]
 
+                # Only real completed results
+                # with real numeric scores enter training.
                 if hg is None or ag is None:
                     continue
 
@@ -683,6 +760,7 @@ def load_history():
                     "date": event["date"],
                     "league_id": lid,
                     "league": league["key"],
+                    "league_name": league["name"],
                     "home": event["home"],
                     "away": event["away"],
                     "home_id": event["home_id"],
@@ -694,9 +772,12 @@ def load_history():
     unique = {}
 
     for row in history:
-        if row["event_id"] is not None:
+
+        event_id_value = row["event_id"]
+
+        if event_id_value is not None:
             unique[
-                str(row["event_id"])
+                str(event_id_value)
             ] = row
 
     history = list(
@@ -717,6 +798,7 @@ def load_history():
 # ============================================================
 
 def load_upcoming():
+
     now = datetime.now(
         timezone.utc
     )
@@ -730,10 +812,15 @@ def load_upcoming():
         {
             "date_from":
                 now.strftime("%Y-%m-%d"),
+
             "date_to":
                 end.strftime("%Y-%m-%d"),
-            "status": "upcoming",
-            "limit": 200,
+
+            "status":
+                "notstarted",
+
+            "limit":
+                200,
         },
     )
 
@@ -762,7 +849,9 @@ def load_upcoming():
     unique = {}
 
     for item in result:
+
         if item["id"] is not None:
+
             unique[
                 str(item["id"])
             ] = item
@@ -777,6 +866,7 @@ def load_upcoming():
 # ============================================================
 
 def load_live():
+
     payload = api_get(
         "/events/live/"
     )
@@ -804,6 +894,7 @@ def load_live():
 # ============================================================
 
 def load_event_odds(event_id):
+
     payload = api_get(
         f"/events/{event_id}/odds/"
     )
@@ -812,6 +903,7 @@ def load_event_odds(event_id):
 
 
 def number(value):
+
     try:
         value = float(value)
 
@@ -831,6 +923,7 @@ def number(value):
 
 
 def odds_rows(payload):
+
     if isinstance(payload, list):
         return payload
 
@@ -842,6 +935,7 @@ def odds_rows(payload):
         "data",
         "odds",
     ):
+
         value = payload.get(key)
 
         if isinstance(value, list):
@@ -851,6 +945,7 @@ def odds_rows(payload):
 
 
 def parse_odds(payload):
+
     rows = odds_rows(payload)
 
     result = {
@@ -948,6 +1043,7 @@ def parse_odds(payload):
 # ============================================================
 
 def empty_team():
+
     return {
         "elo": 1500.0,
         "home_elo": 1500.0,
@@ -969,12 +1065,14 @@ def empty_team():
 
 
 def team_stats():
+
     return defaultdict(
         empty_team
     )
 
 
 def avg(values, fallback):
+
     if not values:
         return fallback
 
@@ -995,6 +1093,7 @@ def elo_probability(
     home_elo,
     away_elo,
 ):
+
     diff = (
         home_elo
         + HOME_ADVANTAGE
@@ -1012,6 +1111,7 @@ def elo_probability(
 # ============================================================
 
 def train_state(history):
+
     teams = team_stats()
 
     for row in history:
@@ -1024,8 +1124,13 @@ def train_state(history):
             row["away"]
         )
 
-        hg = float(row["hg"])
-        ag = float(row["ag"])
+        hg = float(
+            row["hg"]
+        )
+
+        ag = float(
+            row["ag"]
+        )
 
         H = teams[h]
         A = teams[a]
@@ -1092,6 +1197,7 @@ def train_state(history):
 # ============================================================
 
 def poisson(k, lam):
+
     if lam <= 0:
         return 0.0
 
@@ -1161,6 +1267,7 @@ def matrix(
     for h in range(
         MAX_GOALS + 1
     ):
+
         for a in range(
             MAX_GOALS + 1
         ):
@@ -1204,6 +1311,7 @@ def market_probabilities(m):
     for h in range(
         MAX_GOALS + 1
     ):
+
         for a in range(
             MAX_GOALS + 1
         ):
@@ -1262,38 +1370,54 @@ def predict_fixture(
     A = teams.get(akey)
 
     if H is None or A is None:
+
         return {
             "available": False,
-            "reason": "insufficient_team_history",
+            "reason":
+                "insufficient_team_history",
         }
 
     if (
         H["games"] < MIN_HISTORY
         or A["games"] < MIN_HISTORY
     ):
+
         return {
             "available": False,
-            "reason": "insufficient_team_history",
+            "reason":
+                "insufficient_team_history",
         }
 
     home_attack = avg(
         H["home_gf"],
-        avg(H["gf"], 1.25),
+        avg(
+            H["gf"],
+            1.25,
+        ),
     )
 
     home_defense = avg(
         H["home_ga"],
-        avg(H["ga"], 1.25),
+        avg(
+            H["ga"],
+            1.25,
+        ),
     )
 
     away_attack = avg(
         A["away_gf"],
-        avg(A["gf"], 1.10),
+        avg(
+            A["gf"],
+            1.10,
+        ),
     )
 
     away_defense = avg(
         A["away_ga"],
-        avg(A["ga"], 1.25),
+        avg(
+            A["ga"],
+            1.25,
+        ),
     )
 
     league_home = (
@@ -1452,6 +1576,7 @@ def predict_fixture(
         "history": {
             "home_games":
                 H["games"],
+
             "away_games":
                 A["games"],
         },
@@ -1466,6 +1591,7 @@ def calculate_value(
     probability,
     odds,
 ):
+
     if (
         probability is None
         or odds is None
@@ -1529,7 +1655,8 @@ def attach_value(
             "market": market,
             "probability":
                 probability,
-            "odds": odd,
+            "odds":
+                odd,
             "edge":
                 round(
                     edge,
@@ -1564,6 +1691,7 @@ def attach_value(
 def walk_forward(history):
 
     if len(history) < 100:
+
         return {
             "available": False,
             "reason":
@@ -1623,8 +1751,10 @@ def walk_forward(history):
 
         if hg > ag:
             actual_market = "home"
+
         elif hg == ag:
             actual_market = "draw"
+
         else:
             actual_market = "away"
 
@@ -1646,27 +1776,34 @@ def walk_forward(history):
             correct_1x2 += 1
 
         target = {
-            "home": 1.0
+            "home":
+                1.0
                 if actual_market == "home"
                 else 0.0,
 
-            "draw": 1.0
+            "draw":
+                1.0
                 if actual_market == "draw"
                 else 0.0,
 
-            "away": 1.0
+            "away":
+                1.0
                 if actual_market == "away"
                 else 0.0,
         }
 
         brier.append(
             (
-                (p["home"] - target["home"])
-                ** 2
+                (
+                    p["home"]
+                    - target["home"]
+                ) ** 2
+
                 + (
                     p["draw"]
                     - target["draw"]
                 ) ** 2
+
                 + (
                     p["away"]
                     - target["away"]
@@ -1675,20 +1812,26 @@ def walk_forward(history):
         )
 
     if evaluated == 0:
+
         return {
             "available": False,
-            "reason": "no_valid_evaluations",
+            "reason":
+                "no_valid_evaluations",
         }
 
     return {
         "available": True,
-        "matches": evaluated,
+
+        "matches":
+            evaluated,
+
         "accuracy_1x2":
             round(
                 correct_1x2
                 / evaluated,
                 6,
             ),
+
         "brier_1x2":
             round(
                 statistics.mean(
@@ -1708,6 +1851,7 @@ def run_engine():
     history = load_history()
 
     if not history:
+
         raise RuntimeError(
             "GOALDIR returned no real historical matches."
         )
@@ -1723,6 +1867,7 @@ def run_engine():
     for fixture in fixtures:
 
         try:
+
             prediction = predict_fixture(
                 fixture,
                 state,
@@ -1733,6 +1878,7 @@ def run_engine():
             ):
 
                 try:
+
                     odds_payload = (
                         load_event_odds(
                             fixture["id"]
@@ -1744,6 +1890,7 @@ def run_engine():
                     )
 
                 except Exception:
+
                     odds = {}
 
                 prediction = attach_value(
@@ -1832,6 +1979,7 @@ def health():
 def api_run():
 
     try:
+
         result = run_engine()
 
         return jsonify({
@@ -2706,6 +2854,7 @@ if __name__ == "__main__":
     import sys
 
     if not API_KEY:
+
         print(
             "ERROR: GOALDIR_API_KEY is not set."
         )
