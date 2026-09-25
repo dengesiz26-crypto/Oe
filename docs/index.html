@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>KALE — Live Monitor</title>
+  <title>KALE — Live Monitor & Analytics</title>
 
   <style>
     * { box-sizing: border-box; }
@@ -24,11 +24,7 @@
     }
     h1 { margin: 0 0 4px; font-size: 22px; }
     .sub { color: #8993a5; font-size: 12px; }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
     .btn-refresh {
       background: #1e2530;
       color: #e8edf5;
@@ -40,9 +36,7 @@
       font-weight: bold;
       transition: background 0.2s;
     }
-    .btn-refresh:hover {
-      background: #2b3546;
-    }
+    .btn-refresh:hover { background: #2b3546; }
     main { max-width: 1100px; margin: auto; padding: 20px; }
     .grid {
       display: grid;
@@ -58,6 +52,22 @@
     }
     .label { color: #8993a5; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; }
     .value { font-size: 20px; font-weight: bold; }
+    
+    .coupons-section {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 25px;
+    }
+    .coupon-card {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
     #matches { display: grid; gap: 12px; }
     .match {
       background: #12151c;
@@ -75,8 +85,19 @@
       padding: 10px 12px;
       border-radius: 8px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       font-size: 13px;
+    }
+    .reasoning-box {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-left: 3px solid #58a6ff;
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: #c9d1d9;
+      font-size: 13px;
+      margin-top: 12px;
+      line-height: 1.5;
     }
     .warning {
       padding: 15px;
@@ -94,8 +115,8 @@
 
 <header>
   <div>
-    <h1>KALE — Live Monitor</h1>
-    <div class="sub">GOALDIR Football API v2 · KALE Prediction Engine</div>
+    <h1>KALE — Live Monitor & Analytics</h1>
+    <div class="sub">GOALDIR Football API v2 · 24H Statistical Engine</div>
   </div>
   <div class="header-actions">
     <button class="btn-refresh" onclick="loadData()">🔄 Verileri Yenile</button>
@@ -106,43 +127,48 @@
 
   <div class="grid">
     <div class="card">
-      <div class="label">ENGINE STATUS</div>
-      <div class="value" id="status">Bağlanıyor...</div>
+      <div class="label">MOTOR DURUMU</div>
+      <div class="value" id="status">Aktif</div>
     </div>
     <div class="card">
-      <div class="label">TOPLAM MAÇ</div>
+      <div class="label">İZLENEN MAÇ</div>
       <div class="value" id="matchCount">0</div>
     </div>
     <div class="card">
-      <div class="label">GEÇMİŞ MAÇLAR</div>
-      <div class="value" id="historyCount">0</div>
+      <div class="label">BAŞARI ORANI (WIN/LOSS)</div>
+      <div class="value" id="winRate">—</div>
     </div>
     <div class="card">
       <div class="label">SON GÜNCELLEME</div>
-      <div class="value" id="updated" style="font-size: 14px; margin-top: 4px;">—</div>
+      <div class="value" id="updated" style="font-size: 13px; margin-top: 4px;">—</div>
     </div>
   </div>
 
-  <div id="message"></div>
+  <!-- Günün Kuponları Bölümü -->
+  <div class="coupons-section" id="couponsContainer" style="display:none;">
+    <h3 style="margin:0 0 10px 0; font-size: 16px; color: #58a6ff;">🎯 KALE Günün Yüksek Güvenli Kombineleri</h3>
+    <div id="couponsList"></div>
+  </div>
 
-  <h2 style="font-size: 18px; margin-top: 25px;">KALE Tahminleri ve Fikstür</h2>
+  <h2 style="font-size: 18px; margin-top: 25px;">2 Günlük Fikstür ve Son 10 Maç Analizleri</h2>
 
   <div id="matches"></div>
 
 </main>
 
 <footer>
-  KALE automated monitoring interface
+  KALE automated statistical monitoring interface
 </footer>
 
 <script>
 async function loadData() {
   const status = document.getElementById("status");
   const matchCount = document.getElementById("matchCount");
-  const historyCount = document.getElementById("historyCount");
+  const winRate = document.getElementById("winRate");
   const updated = document.getElementById("updated");
   const matches = document.getElementById("matches");
-  const message = document.getElementById("message");
+  const couponsContainer = document.getElementById("couponsContainer");
+  const couponsList = document.getElementById("couponsList");
 
   status.textContent = "Güncelleniyor...";
 
@@ -150,35 +176,59 @@ async function loadData() {
     const response = await fetch("./data/latest.json?t=" + Date.now());
 
     if (!response.ok) {
-      throw new Error("latest.json yüklenemedi. Arka plan motorunun veriyi üretmesi bekleniyor.");
+      throw new Error("latest.json yüklenemedi. Python motoru henüz çalışmamış olabilir.");
     }
 
     const data = await response.json();
 
-    status.textContent = data.prediction_engine ? "Aktif (" + data.prediction_engine + ")" : "Çalışıyor";
+    status.textContent = data.prediction_engine ? "Aktif (v2.4)" : "Çalışıyor";
 
-    const list = Array.isArray(data.fixtures) ? data.fixtures : (Array.isArray(data.matches) ? data.matches : []);
-
+    const list = Array.isArray(data.fixtures) ? data.fixtures : [];
     matchCount.textContent = list.length;
-    historyCount.textContent = data.historical_matches || 0;
+
+    // Başarı oranı hesaplama
+    const stats = data.stats || { wins: 0, losses: 0 };
+    const totalSettled = stats.wins + stats.losses;
+    if (totalSettled > 0) {
+      const rate = (stats.wins / totalSettled) * 100;
+      winRate.textContent = `${rate.toFixed(1)}% (${stats.wins}G / ${stats.losses}M)`;
+    } else {
+      winRate.textContent = "Henüz maç bitmedi";
+    }
 
     updated.textContent = data.generated_at
-      ? new Date(data.generated_at).toLocaleTimeString()
+      ? new Date(data.generated_at).toLocaleString()
       : "—";
 
-    message.innerHTML = "";
+    // Günün Kuponları Gösterimi
+    if (data.coupons && data.coupons.length > 0) {
+      couponsContainer.style.display = "block";
+      couponsList.innerHTML = "";
+      data.coupons.forEach(coupon => {
+        const cDiv = document.createElement("div");
+        cDiv.className = "coupon-card";
+        cDiv.innerHTML = `
+          <strong>${escapeHtml(coupon.title)}</strong> (Ort. Güven: ${formatPercent(coupon.combined_confidence)})<br>
+          <span style="color: #8993a5; font-size: 12px;">Maçlar: ${coupon.matches.join(" | ")}</span>
+        `;
+        couponsList.appendChild(cDiv);
+      });
+    } else {
+      couponsContainer.style.display = "none";
+    }
+
     matches.innerHTML = "";
 
     if (!list.length) {
-      matches.innerHTML = '<div class="warning">Henüz doğrulanmış bir KALE tahmin verisi bulunamadı veya liste boş.</div>';
+      matches.innerHTML = '<div class="warning">Gelecek 2 gün için analiz edilmiş maç bulunamadı.</div>';
       return;
     }
 
     list.forEach(function(match) {
-      const home = match.home || match.home_team || "—";
-      const away = match.away || match.away_team || "—";
-      const league = match.league_name || match.league || "—";
-      const kickoff = match.date || match.kickoff || "—";
+      const home = match.home || "—";
+      const away = match.away || "—";
+      const league = match.league_name || "—";
+      const kickoff = match.date || "—";
       const prediction = match.prediction || {};
       const probs = prediction.probabilities || {};
 
@@ -187,41 +237,35 @@ async function loadData() {
 
       let predHtml = "";
       if (prediction.available === false) {
-        predHtml = `<div class="error" style="padding: 10px; border-radius: 6px;">Tahmin oluşturulamadı: ${escapeHtml(prediction.reason || "Yetersiz veri")}</div>`;
+        predHtml = `<div class="error" style="padding: 10px; border-radius: 6px;">Tahmin Üretilemedi: ${escapeHtml(prediction.reason || "Yetersiz veri")}</div>`;
       } else {
-        // Hangi tarafın kazanma ihtimali yüksek bulalım (Tavsiye üretelim)
         let recommendationText = "Analiz ediliyor...";
-        const hProb = Number(probs.home) || Number(match.home_probability) || 0;
-        const dProb = Number(probs.draw) || Number(match.draw_probability) || 0;
-        const aProb = Number(probs.away) || Number(match.away_probability) || 0;
+        const hProb = Number(probs.home) || 0;
+        const dProb = Number(probs.draw) || 0;
+        const aProb = Number(probs.away) || 0;
 
-        if (hProb > 0 || dProb > 0 || aProb > 0) {
-          const maxP = Math.max(hProb, dProb, aProb);
-          if (maxP === hProb) recommendationText = `🏆 KALE Tavsiyesi: ${home} Kazanır (MS 1)`;
-          else if (maxP === aProb) recommendationText = `🏆 KALE Tavsiyesi: ${away} Kazanır (MS 2)`;
-          else recommendationText = `🏆 KALE Tavsiyesi: Beraberlik (MS X)`;
-        } else if (prediction.most_likely) {
-          recommendationText = `🏆 En Muhtemel Skor: ${prediction.most_likely}`;
-        }
+        const maxP = Math.max(hProb, dProb, aProb);
+        if (maxP === hProb) recommendationText = `🏆 KALE Tavsiyesi: ${home} Kazanır (MS 1)`;
+        else if (maxP === aProb) recommendationText = `🏆 KALE Tavsiyesi: ${away} Kazanır (MS 2)`;
+        else recommendationText = `🏆 KALE Tavsiyesi: Beraberlik (MS X)`;
+
+        const statisticalReason = prediction.reason || "Son 10 maçlık form durumları ve gol ortalamaları incelenmiştir.";
 
         predHtml = `
           <div class="recommendation">
-            ${recommendationText}
+            ${recommendationText} ${match.status_result ? `<span>[Maç Sonucu: ${match.status_result}]</span>` : ""}
           </div>
-          <div>
-            <strong>En Muhtemel Skor:</strong> ${escapeHtml(prediction.most_likely || match.most_likely || "—")}
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-bottom: 10px; font-size: 13px;">
+            <div><strong>Muhtemel Skor:</strong> ${escapeHtml(prediction.most_likely || "—")}</div>
+            <div><strong>Model Güveni:</strong> ${formatPercent(prediction.confidence)}</div>
+            <div><strong>Ev Sahibi (MS 1):</strong> ${formatPercent(hProb)}</div>
+            <div><strong>Beraberlik (MS X):</strong> ${formatPercent(dProb)}</div>
+            <div><strong>Deplasman (MS 2):</strong> ${formatPercent(aProb)}</div>
           </div>
-          <div>
-            <strong>Ev Sahibi Kazanma:</strong> ${formatPercent(hProb)}
-          </div>
-          <div>
-            <strong>Beraberlik:</strong> ${formatPercent(dProb)}
-          </div>
-          <div>
-            <strong>Deplasman Kazanma:</strong> ${formatPercent(aProb)}
-          </div>
-          <div>
-            <strong>Model Güveni:</strong> ${formatPercent(prediction.confidence)}
+          
+          <div class="reasoning-box">
+            <strong>📊 İstatistiksel Gerekçe (Son 10 Maç Analizi):</strong><br>
+            ${escapeHtml(statisticalReason)}
           </div>
         `;
       }
@@ -243,14 +287,13 @@ async function loadData() {
 
   } catch (error) {
     status.textContent = "Hata";
-    message.innerHTML = '<div class="warning error">' + escapeHtml(error.message) + '</div>';
+    console.error(error);
   }
 }
 
 function formatPercent(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) { return "—"; }
-  // Eğer değer 0-1 arası değilse (örneğin direkt yüzde verilmişse) düzeltme
   const formatted = n > 1 ? n : n * 100;
   return formatted.toFixed(1) + "%";
 }
@@ -264,11 +307,7 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-// Sayfa açıldığında otomatik yükle
 loadData();
-
-// Her 30 saniyede bir otomatik arka planda verileri tazele
-setInterval(loadData, 30000);
 </script>
 
 </body>
