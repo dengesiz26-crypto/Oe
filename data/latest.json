@@ -1,0 +1,9 @@
+{
+  "status": "waiting",
+  "source": "GOALDIR Football API v2",
+  "prediction_engine": "KALE",
+  "generated_at": null,
+  "matches": [],
+  "predictions": [],
+  "message": "Waiting for KALE engine output."
+}
