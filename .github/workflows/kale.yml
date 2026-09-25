@@ -1,47 +1,215 @@
-name: KALE Live Value Engine
+name: KALE Live Monitor & Engine
 
 on:
   workflow_dispatch:
-
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: '0 * * * *' # Her saat başı çalışır
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  kale:
+  run-kale-engine:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run KALE
+      - name: Ensure directories exist
+        run: |
+          mkdir -p data
+          mkdir -p docs
+
+      # ---------------------------------------------------------
+      # DEBUG: Çalışma dizinini ve dosyaları göster
+      # ---------------------------------------------------------
+      - name: Debug - List Initial Files
+        run: |
+          echo "=== Current Directory ==="
+          pwd
+          echo "=== Directory Contents ==="
+          ls -la
+
+      # ---------------------------------------------------------
+      # KALE Python Motorunu Çalıştır ve Çıktıları Yakala
+      # ---------------------------------------------------------
+      - name: Run KALE Prediction Engine
         env:
           GOALDIR_API_KEY: ${{ secrets.GOALDIR_API_KEY }}
         run: |
+          echo "Running app.py --run..."
           python app.py --run
+          echo "app.py execution finished."
 
-      - name: Save result
+      # ---------------------------------------------------------
+      # DEBUG: app.py sonrasında data/latest.json oluştu mu ve içi dolu mu?
+      # ---------------------------------------------------------
+      - name: Debug - Check generated latest.json
         run: |
-          git config user.name "KALE Bot"
-          git config user.email "kale-bot@users.noreply.github.com"
+          echo "=== Checking data/ directory ==="
+          ls -la data/
+          
+          if [ -f "data/latest.json" ]; then
+            echo "=== CONTENT OF data/latest.json ==="
+            cat data/latest.json
+          else
+            echo "ERROR: data/latest.json does NOT exist!"
+            exit 1
+          fi
 
-          git add data/latest.json
+      # ---------------------------------------------------------
+      # Dashboard (docs/index.html) dosyasını güncelle/garantiye al
+      # ---------------------------------------------------------
+      - name: Create or Update Dashboard HTML
+        run: |
+          cat > docs/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>KALE — Live Monitor</title>
+            <style>
+              * { box-sizing: border-box; }
+              body { margin: 0; background: #0a0c10; color: #e8edf5; font-family: Arial, sans-serif; }
+              header { padding: 20px; border-bottom: 1px solid #242936; }
+              h1 { margin: 0 0 6px; font-size: 24px; }
+              .sub { color: #8993a5; font-size: 13px; }
+              main { max-width: 1100px; margin: auto; padding: 20px; }
+              .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 12px; margin-bottom: 20px; }
+              .card { background: #12151c; border: 1px solid #242936; border-radius: 12px; padding: 16px; }
+              .label { color: #8993a5; font-size: 12px; margin-bottom: 8px; }
+              .value { font-size: 22px; font-weight: bold; }
+              #matches { display: grid; gap: 12px; }
+              .match { background: #12151c; border: 1px solid #242936; border-radius: 12px; padding: 16px; }
+              .teams { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+              .meta { color: #8993a5; font-size: 12px; margin-bottom: 12px; }
+              .prediction { border-top: 1px solid #242936; padding-top: 12px; line-height: 1.7; }
+              .warning { padding: 15px; border: 1px solid #5a4b20; background: #17150d; border-radius: 10px; color: #d9c67a; }
+              .error { color: #ff8d8d; }
+              footer { padding: 25px 20px; color: #667085; font-size: 11px; text-align: center; }
+            </style>
+          </head>
+          <body>
+          <header>
+            <h1>KALE — Live Monitor</h1>
+            <div class="sub">GOALDIR Football API v2 · KALE prediction engine</div>
+          </header>
+          <main>
+            <div class="grid">
+              <div class="card"><div class="label">ENGINE STATUS</div><div class="value" id="status">—</div></div>
+              <div class="card"><div class="label">MATCHES / FIXTURES</div><div class="value" id="matchCount">0</div></div>
+              <div class="card"><div class="label">PREDICTIONS</div><div class="value" id="predictionCount">0</div></div>
+              <div class="card"><div class="label">LAST UPDATE</div><div class="value" id="updated">—</div></div>
+            </div>
+            <div id="message"></div>
+            <h2>KALE Predictions</h2>
+            <div id="matches"></div>
+          </main>
+          <footer>KALE monitoring interface</footer>
+          <script>
+          async function loadData() {
+            const status = document.getElementById("status");
+            const matchCount = document.getElementById("matchCount");
+            const predictionCount = document.getElementById("predictionCount");
+            const updated = document.getElementById("updated");
+            const matches = document.getElementById("matches");
+            const message = document.getElementById("message");
 
-          git diff --cached --quiet || \
-            git commit -m "Update KALE live data"
+            try {
+              const response = await fetch("./data/latest.json?t=" + Date.now());
+              if (!response.ok) throw new Error("latest.json could not be loaded");
+              const data = await response.json();
 
-          git push
+              status.textContent = data.status || data.prediction_engine || "active";
+
+              // Desteklenen olası anahtar isimleri (matches veya fixtures)
+              const list = Array.isArray(data.matches) ? data.matches : (Array.isArray(data.fixtures) ? data.fixtures : []);
+              const predictions = Array.isArray(data.predictions) ? data.predictions : [];
+
+              matchCount.textContent = list.length;
+              predictionCount.textContent = predictions.length || list.length;
+
+              updated.textContent = data.generated_at ? new Date(data.generated_at).toLocaleString() : "—";
+              message.innerHTML = "";
+
+              if (data.message) {
+                message.innerHTML = '<div class="warning">' + escapeHtml(data.message) + '</div>';
+              }
+
+              matches.innerHTML = "";
+              if (!list.length) {
+                matches.innerHTML = '<div class="warning">No verified KALE prediction data available yet. (JSON array is empty)</div>';
+                return;
+              }
+
+              list.forEach(function(match) {
+                const home = match.home || match.home_team || "—";
+                const away = match.away || match.away_team || "—";
+                const league = match.league || match.league_name || "—";
+                const kickoff = match.kickoff || match.date || "—";
+                const prediction = match.prediction || {};
+                const probs = prediction.probabilities || {};
+
+                const card = document.createElement("div");
+                card.className = "match";
+                card.innerHTML = `
+                  <div class="teams">${escapeHtml(home)} vs ${escapeHtml(away)}</div>
+                  <div class="meta">${escapeHtml(league)} · ${escapeHtml(kickoff)}</div>
+                  <div class="prediction">
+                    <div><strong>Most likely score:</strong> ${escapeHtml(prediction.most_likely || prediction.most_likely_score || match.most_likely || "—")}</div>
+                    <div><strong>Home probability:</strong> ${formatPercent(probs.home ?? prediction.home_probability ?? match.home_probability)}</div>
+                    <div><strong>Draw probability:</strong> ${formatPercent(probs.draw ?? prediction.draw_probability ?? match.draw_probability)}</div>
+                    <div><strong>Away probability:</strong> ${formatPercent(probs.away ?? prediction.away_probability ?? match.away_probability)}</div>
+                  </div>`;
+                matches.appendChild(card);
+              });
+            } catch (error) {
+              status.textContent = "error";
+              message.innerHTML = '<div class="warning error">' + escapeHtml(error.message) + '</div>';
+            }
+          }
+          function formatPercent(value) {
+            const n = Number(value);
+            if (!Number.isFinite(n)) return "—";
+            return (n * 100).toFixed(1) + "%";
+          }
+          function escapeHtml(value) {
+            return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+          }
+          loadData();
+          setInterval(loadData, 30000);
+          </script>
+          </body>
+          </html>
+          HTML
+
+      # ---------------------------------------------------------
+      # Git Commit ve Push
+      # ---------------------------------------------------------
+      - name: Commit and push latest data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add data/latest.json docs/index.html
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-update KALE live monitor data & logs [skip ci]"
+            git push
+          fi
