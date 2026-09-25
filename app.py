@@ -569,13 +569,21 @@ runEngine();
 # ============================================================
 # START
 # ============================================================
+import sys
+
 if __name__ == "__main__":
     if not API_KEY:
         print("ERROR: GOALDIR_API_KEY / BSD_API_KEY is not set.")
         raise SystemExit(1)
-    app.run(
-        host="0.0.0.0",
-        port=PORT,  # Burada PORT yerine küçük harf port olmalıydı
-        debug=False,
-    )
-    
+        
+    # Eğer terminalden --run argümanı ile çağrıldıysa sunucuyu açma, direkt analizi çalıştır
+    if "--run" in sys.argv:
+        print("KALE Motoru CLI modunda çalıştırılıyor...")
+        history = load_history()
+        teams = train_state(history)
+        fixtures = load_upcoming()
+        print(f"Toplam {len(fixtures)} gelecek maç analiz için hazır.")
+    else:
+        # Web sunucusunu başlat
+        app.run(host="0.0.0.0", port=PORT, debug=False)
+        
