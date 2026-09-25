@@ -1,12 +1,10 @@
 {
-  "prediction_engine": "KALE Statistical Engine v2.4",
-  "generated_at": "2026-09-25T04:08:47.597516",
-  "historical_matches": 0,
+  "prediction_engine": true,
+  "generated_at": "2026-09-25T04:17:07.943712+00:00",
   "stats": {
     "wins": 0,
-    "losses": 0,
-    "total_settled": 0
+    "losses": 0
   },
-  "fixtures": [],
-  "coupons": []
+  "coupons": [],
+  "fixtures": []
 }
