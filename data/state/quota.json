@@ -1,12 +1,12 @@
 {
   "goaldir": {
     "date": "2026-09-26",
-    "daily_used": 262,
-    "minute_used": 85,
-    "minute_window_start": 1790405988.901515,
+    "daily_used": 524,
+    "minute_used": 79,
+    "minute_window_start": 1790410699.8473995,
     "consecutive_429": 0,
     "circuit_open_until": 0,
-    "daily_remaining_reported": 7323
+    "daily_remaining_reported": 7093
   },
   "odds_api": {
     "date": "2026-09-26",
