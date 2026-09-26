@@ -1,9 +1,0 @@
-__pycache__/
-*.pyc
-.env
-data/cache/*
-!data/cache/.gitkeep
-data/raw/*
-!data/raw/.gitkeep
-*.tmp
-.DS_Store
