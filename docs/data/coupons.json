@@ -1,4 +1,143 @@
 {
-  "generated_at": "2026-09-26T03:57:57.859271+00:00",
-  "coupons": []
+  "generated_at": "2026-09-26T07:00:47.820625+00:00",
+  "coupons": [
+    {
+      "legs": [
+        {
+          "fixture_id": "goaldir:602521",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.35,
+          "edge": 0.0117,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212631",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.41,
+          "edge": 0.0567,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212608",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.36,
+          "edge": 0.0192,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212629",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.54,
+          "edge": 0.1541,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        }
+      ],
+      "joint_probability": 0.3154,
+      "leg_count": 4
+    },
+    {
+      "legs": [
+        {
+          "fixture_id": "goaldir:602521",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.35,
+          "edge": 0.0117,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212631",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.41,
+          "edge": 0.0567,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212608",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.36,
+          "edge": 0.0192,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212627",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.46,
+          "edge": 0.0942,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        }
+      ],
+      "joint_probability": 0.3154,
+      "leg_count": 4
+    },
+    {
+      "legs": [
+        {
+          "fixture_id": "goaldir:212629",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.54,
+          "edge": 0.1541,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212627",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.46,
+          "edge": 0.0942,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:10144",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.4,
+          "edge": 0.0492,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        },
+        {
+          "fixture_id": "goaldir:212621",
+          "market": "over_1.5",
+          "probability": 0.7494,
+          "odds": 1.48,
+          "edge": 0.1092,
+          "risk_level": "LOW",
+          "classification": "BANKO",
+          "tier": "A_STRONG"
+        }
+      ],
+      "joint_probability": 0.3154,
+      "leg_count": 4
+    }
+  ]
 }
