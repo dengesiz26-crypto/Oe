@@ -1,14 +1,14 @@
 {
   "goaldir": {
-    "date": "2026-09-25",
-    "daily_used": 4,
+    "date": "2026-09-26",
+    "daily_used": 2,
     "minute_used": 2,
-    "minute_window_start": 1790376382.1846006,
+    "minute_window_start": 1790402838.349938,
     "consecutive_429": 0,
     "circuit_open_until": 0
   },
   "odds_api": {
-    "date": "2026-09-25",
+    "date": "2026-09-26",
     "daily_used": 0,
     "minute_used": 0,
     "minute_window_start": 1790376048.816662,
@@ -16,7 +16,7 @@
     "circuit_open_until": 0
   },
   "api_football": {
-    "date": "2026-09-25",
+    "date": "2026-09-26",
     "daily_used": 0,
     "minute_used": 0,
     "minute_window_start": 1790376048.8166714,
@@ -24,7 +24,7 @@
     "circuit_open_until": 0
   },
   "sportapi": {
-    "date": "2026-09-25",
+    "date": "2026-09-26",
     "daily_used": 0,
     "minute_used": 0,
     "minute_window_start": 1790376048.8166795,
