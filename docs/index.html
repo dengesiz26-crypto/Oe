@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Football — Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><span class="brand-mark"></span>AI FOOTBALL</a>
+  <nav class="mainnav">
+    <a href="index.html" class="active">Home</a>
+    <a href="live.html">Live</a>
+    <a href="ai-picks.html">AI Picks</a>
+    <a href="odds-ai.html">Odds &amp; AI</a>
+    <a href="coupons.html">Coupons</a>
+    <a href="results.html">Results</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <div class="page-head">
+    <h1>Today's board</h1>
+    <p>Statistical probabilities, real market odds, and where the two disagree.</p>
+  </div>
+
+  <div class="grid grid-3" id="stat-strip"></div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="page-head" style="margin-bottom:12px;">
+      <h1 style="font-size:16px;"><span class="status-dot"></span>Live now</h1>
+    </div>
+    <div id="live-list"></div>
+  </div>
+
+  <div style="margin-top:24px;">
+    <div class="page-head" style="margin-bottom:12px;">
+      <h1 style="font-size:18px;">Featured AI picks</h1>
+    </div>
+    <div id="picks-list"></div>
+  </div>
+</main>
+
+<footer><div class="wrap">Predictions are probability estimates from our own statistical model, not guarantees. Always gamble responsibly.</div></footer>
+
+<script src="js/app.js"></script>
+<script>
+(async function(){
+  const [latest, live, results, system] = await Promise.all([
+    loadJSON("data/latest.json"), loadJSON("data/live.json"),
+    loadJSON("data/results.json"), loadJSON("data/system.json"),
+  ]);
+
+  const strip = document.getElementById("stat-strip");
+  const report = results?.report || {};
+  const picks = latest?.picks || [];
+  const playCount = picks.filter(p => p.decision === "PLAY").length;
+  strip.innerHTML = `
+    <div class="card stat"><div class="label">Active AI Picks</div><div class="value">${playCount}</div></div>
+    <div class="card stat"><div class="label">Overall Hit Rate</div><div class="value">${report.hit_rate != null ? fmtPct(report.hit_rate) : "—"}</div></div>
+    <div class="card stat"><div class="label">ROI (flat stake)</div><div class="value">${report.roi != null ? fmtEdge(report.roi) : "—"}</div></div>
+  `;
+
+  const liveList = document.getElementById("live-list");
+  const liveMatches = live?.live || [];
+  liveList.innerHTML = liveMatches.length ? liveMatches.map(m => `
+    <div class="ticket-leg">
+      <div class="leg-match">${m.home_team} ${m.home_score} — ${m.away_score} ${m.away_team}</div>
+      <div class="leg-market">${m.minute}' · ${m.league}</div>
+    </div>`).join("") : `<div class="empty">No live matches right now.</div>`;
+
+  const picksList = document.getElementById("picks-list");
+  const featured = picks.filter(p => p.decision === "PLAY").slice(0, 4);
+  picksList.innerHTML = featured.length ? featured.map(pickCardHTML).join("") : `<div class="empty">No qualifying picks yet — check back after the next pipeline run.</div>`;
+})();
+</script>
+</body>
+</html>

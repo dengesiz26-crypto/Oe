@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Football — Odds &amp; AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><span class="brand-mark"></span>AI FOOTBALL</a>
+  <nav class="mainnav">
+    <a href="index.html">Home</a>
+    <a href="live.html">Live</a>
+    <a href="ai-picks.html">AI Picks</a>
+    <a href="odds-ai.html" class="active">Odds &amp; AI</a>
+    <a href="coupons.html">Coupons</a>
+    <a href="results.html">Results</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <div class="page-head" id="fixture-head"></div>
+
+  <div class="card">
+    <table class="odds-table">
+      <thead><tr>
+        <th>Market</th><th>Bookmaker Odds</th><th>AI Expectation</th><th>Fair Odds</th><th>Edge</th><th>Risk</th><th>Decision</th>
+      </tr></thead>
+      <tbody id="odds-body"></tbody>
+    </table>
+  </div>
+</main>
+<footer><div class="wrap">Bookmaker odds and AI probability are never the same number — that gap (edge) is the whole point of this page.</div></footer>
+<script src="js/app.js"></script>
+<script>
+(async function(){
+  const data = await loadJSON("data/odds_comparison.json");
+  if (!data) return;
+  const fx = data.fixture;
+  document.getElementById("fixture-head").innerHTML = `
+    <h1>${fx.home_team} — ${fx.away_team}</h1>
+    <p>${fx.league} · ${fmtKickoff(fx.kickoff_utc)}</p>`;
+
+  document.getElementById("odds-body").innerHTML = data.rows.map(r => `
+    <tr>
+      <td>${r.label}</td>
+      <td class="num">${fmtOdds(r.bookmaker_odds)}</td>
+      <td class="num">${fmtPct(r.model_probability)}</td>
+      <td class="num">${fmtOdds(r.fair_odds)}</td>
+      <td class="num ${r.edge > 0 ? '' : ''}"><span class="value ${r.edge>0?'pos':'neg'}">${fmtEdge(r.edge)}</span></td>
+      <td>${r.risk_level}</td>
+      <td><span class="${decisionBadgeClass(r.decision)}">${r.decision}</span></td>
+    </tr>`).join("");
+})();
+</script>
+</body>
+</html>

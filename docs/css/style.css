@@ -1,0 +1,178 @@
+/* ============================================================
+   Design tokens
+   Palette read: a dim scoreboard room after hours — graphite walls,
+   one amber readout for the AI picks, one cool teal for anything live.
+   ============================================================ */
+:root{
+  --bg: #14171F;
+  --bg-elevated: #1B2029;
+  --bg-inset: #10131A;
+  --border: #262C3A;
+  --text: #EDEEF2;
+  --text-muted: #8B93A7;
+  --text-faint: #565E70;
+
+  --gold: #E3A438;
+  --gold-dim: #6B5426;
+  --teal: #3FC1B0;
+  --teal-dim: #1E4A44;
+  --red: #E2596B;
+  --red-dim: #4A2530;
+
+  --font-head: "Space Grotesk", "Inter", sans-serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --radius: 6px;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none;}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+
+/* ---------- top bar ---------- */
+.topbar{
+  border-bottom:1px solid var(--border);
+  background:var(--bg-elevated);
+}
+.topbar-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;max-width:1080px;margin:0 auto;
+}
+.brand{
+  font-family:var(--font-head);font-weight:700;font-size:18px;
+  display:flex;align-items:center;gap:8px;letter-spacing:-0.01em;
+}
+.brand-mark{
+  width:22px;height:22px;border-radius:4px;
+  background:linear-gradient(135deg,var(--gold),#B97C1F);
+  display:inline-block;
+}
+nav.mainnav{display:flex;gap:2px;}
+nav.mainnav a{
+  padding:8px 12px;border-radius:5px;font-size:13.5px;color:var(--text-muted);
+  transition:background .15s, color .15s;
+}
+nav.mainnav a:hover{background:var(--bg-inset);color:var(--text);}
+nav.mainnav a.active{background:var(--bg-inset);color:var(--gold);}
+
+.status-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--teal);
+  display:inline-block;margin-right:6px;
+  box-shadow:0 0 0 3px var(--teal-dim);
+}
+
+/* ---------- page shell ---------- */
+main{padding:28px 0 60px;}
+.page-head{margin-bottom:22px;}
+.page-head h1{
+  font-family:var(--font-head);font-size:26px;margin:0 0 4px;letter-spacing:-0.01em;
+}
+.page-head p{color:var(--text-muted);margin:0;font-size:14px;}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--bg-elevated);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+}
+.card + .card{margin-top:12px;}
+.grid{display:grid;gap:12px;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media (max-width:720px){.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+/* ---------- pick card ---------- */
+.pick-card{
+  display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center;
+}
+.pick-teams{font-family:var(--font-head);font-size:16px;}
+.pick-meta{color:var(--text-faint);font-size:12px;margin-top:2px;}
+.pick-market{
+  font-family:var(--font-mono);font-size:13px;color:var(--text-muted);
+  grid-column:1;margin-top:8px;
+}
+.pick-figures{
+  grid-column:1/-1;display:flex;gap:22px;margin-top:10px;
+  padding-top:12px;border-top:1px dashed var(--border);
+  flex-wrap:wrap;
+}
+.figure{display:flex;flex-direction:column;gap:2px;}
+.figure .label{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);}
+.figure .value{font-family:var(--font-mono);font-size:15px;}
+.value.pos{color:var(--teal);}
+.value.neg{color:var(--red);}
+
+/* ---------- badges ---------- */
+.badge{
+  font-family:var(--font-mono);font-size:11px;font-weight:600;
+  padding:3px 9px;border-radius:4px;white-space:nowrap;letter-spacing:.02em;
+}
+.badge-BANKO{background:var(--gold-dim);color:var(--gold);}
+.badge-STANDARD{background:#2A3550;color:#7EA6E8;}
+.badge-IDEAL{background:var(--teal-dim);color:var(--teal);}
+.badge-RISKLI{background:#4A3B1E;color:#D9A340;}
+.badge-UZAKDUR{background:var(--red-dim);color:var(--red);}
+.badge-PLAY{background:var(--teal-dim);color:var(--teal);}
+.badge-NOBET{background:var(--bg-inset);color:var(--text-faint);border:1px solid var(--border);}
+
+/* ---------- odds comparison table ---------- */
+table.odds-table{width:100%;border-collapse:collapse;font-size:14px;}
+table.odds-table th{
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--text-faint);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border);
+}
+table.odds-table td{padding:12px 10px;border-bottom:1px solid var(--border);}
+table.odds-table tr:last-child td{border-bottom:none;}
+table.odds-table td.num{font-family:var(--font-mono);}
+
+/* ---------- coupon ticket ---------- */
+.ticket{
+  background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);
+  position:relative;overflow:hidden;
+}
+.ticket-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 18px;border-bottom:1px dashed var(--border);
+}
+.ticket-id{font-family:var(--font-mono);font-size:12px;color:var(--text-faint);}
+.ticket-legs{padding:6px 18px;}
+.ticket-leg{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.ticket-leg:last-child{border-bottom:none;}
+.leg-match{font-size:13.5px;}
+.leg-market{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);}
+.ticket-foot{
+  display:flex;justify-content:space-between;padding:12px 18px;
+  background:var(--bg-inset);font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);
+}
+
+/* ---------- stat strip ---------- */
+.stat{
+  text-align:left;
+}
+.stat .label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);}
+.stat .value{font-family:var(--font-head);font-size:26px;margin-top:2px;}
+
+.empty{
+  color:var(--text-faint);font-size:13.5px;padding:30px 0;text-align:center;
+  border:1px dashed var(--border);border-radius:var(--radius);
+}
+
+footer{
+  border-top:1px solid var(--border);padding:20px 0;margin-top:40px;
+  color:var(--text-faint);font-size:12px;
+}

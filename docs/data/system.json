@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-09-26T03:57:57.859271+00:00",
+  "providers": [
+    {
+      "provider": "goaldir",
+      "daily_used": 4,
+      "minute_used": 4,
+      "consecutive_429": 0,
+      "circuit_open": false
+    },
+    {
+      "provider": "odds_api",
+      "daily_used": 0,
+      "minute_used": 0,
+      "consecutive_429": 0,
+      "circuit_open": false
+    },
+    {
+      "provider": "api_football",
+      "daily_used": 0,
+      "minute_used": 0,
+      "consecutive_429": 0,
+      "circuit_open": false
+    },
+    {
+      "provider": "sportapi",
+      "daily_used": 0,
+      "minute_used": 0,
+      "consecutive_429": 0,
+      "circuit_open": false
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Football — Coupons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><span class="brand-mark"></span>AI FOOTBALL</a>
+  <nav class="mainnav">
+    <a href="index.html">Home</a>
+    <a href="live.html">Live</a>
+    <a href="ai-picks.html">AI Picks</a>
+    <a href="odds-ai.html">Odds &amp; AI</a>
+    <a href="coupons.html" class="active">Coupons</a>
+    <a href="results.html">Results</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <div class="page-head"><h1>Coupons</h1><p>Built from the strongest candidates only — "no coupon" is a valid, expected result on a quiet day.</p></div>
+  <div class="grid grid-2" id="coupon-list"></div>
+</main>
+<footer><div class="wrap">Same fixture appears in at most 3 coupons; the same exact bet in at most 2.</div></footer>
+<script src="js/app.js"></script>
+<script>
+(async function(){
+  const data = await loadJSON("data/coupons.json");
+  const coupons = data?.coupons || [];
+  const list = document.getElementById("coupon-list");
+  if (!coupons.length){ list.innerHTML = `<div class="empty" style="grid-column:1/-1;">NO COUPON — no qualifying candidates right now.</div>`; return; }
+
+  list.innerHTML = coupons.map(c => `
+    <div class="ticket">
+      <div class="ticket-head">
+        <span class="ticket-id">#${c.coupon_id}</span>
+        <span class="badge ${c.status === 'WON' ? 'badge-PLAY' : c.status === 'LOST' ? 'badge-NOBET' : 'badge-STANDARD'}">${c.status}</span>
+      </div>
+      <div class="ticket-legs">
+        ${c.legs.map(l => `
+          <div class="ticket-leg">
+            <div>
+              <div class="leg-match">${l.match}</div>
+              <div class="leg-market">${l.label} · ${fmtPct(l.probability)} · ${fmtOdds(l.odds)}</div>
+            </div>
+            <span class="${classBadgeClass(l.classification)}">${l.classification}</span>
+          </div>`).join("")}
+      </div>
+      <div class="ticket-foot">
+        <span>${c.legs.length} legs</span>
+        <span>Joint probability ${fmtPct(c.joint_probability)}</span>
+      </div>
+    </div>`).join("");
+})();
+</script>
+</body>
+</html>

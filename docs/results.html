@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Football — Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner">
+  <a class="brand" href="index.html"><span class="brand-mark"></span>AI FOOTBALL</a>
+  <nav class="mainnav">
+    <a href="index.html">Home</a>
+    <a href="live.html">Live</a>
+    <a href="ai-picks.html">AI Picks</a>
+    <a href="odds-ai.html">Odds &amp; AI</a>
+    <a href="coupons.html">Coupons</a>
+    <a href="results.html" class="active">Results</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <div class="page-head"><h1>Results &amp; calibration</h1><p>Only real settled outcomes appear here — nothing projected or simulated.</p></div>
+
+  <div class="grid grid-3" id="stat-strip"></div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="page-head" style="margin-bottom:12px;"><h1 style="font-size:16px;">Performance by market</h1></div>
+    <table class="odds-table">
+      <thead><tr><th>Market</th><th>Predictions</th><th>Hit rate</th><th>Brier score</th></tr></thead>
+      <tbody id="market-body"></tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="page-head" style="margin-bottom:12px;"><h1 style="font-size:16px;">Provider status</h1></div>
+    <table class="odds-table">
+      <thead><tr><th>Provider</th><th>Calls used today</th><th>Circuit</th></tr></thead>
+      <tbody id="provider-body"></tbody>
+    </table>
+  </div>
+</main>
+<footer><div class="wrap">Brier score: lower is better (0 = perfect, 0.25 = coin-flip-level on a binary outcome).</div></footer>
+<script src="js/app.js"></script>
+<script>
+(async function(){
+  const [results, system] = await Promise.all([loadJSON("data/results.json"), loadJSON("data/system.json")]);
+  const r = results?.report || {};
+
+  document.getElementById("stat-strip").innerHTML = `
+    <div class="card stat"><div class="label">Settled predictions</div><div class="value">${r.n ?? "—"}</div></div>
+    <div class="card stat"><div class="label">Hit rate</div><div class="value">${r.hit_rate != null ? fmtPct(r.hit_rate) : "—"}</div></div>
+    <div class="card stat"><div class="label">ROI</div><div class="value">${r.roi != null ? fmtEdge(r.roi) : "—"}</div></div>
+  `;
+
+  const perMarket = r.per_market || {};
+  document.getElementById("market-body").innerHTML = Object.entries(perMarket).map(([market, m]) => `
+    <tr><td>${marketLabel(market)}</td><td class="num">${m.n}</td><td class="num">${fmtPct(m.hit_rate)}</td><td class="num">${m.brier.toFixed(3)}</td></tr>
+  `).join("") || `<tr><td colspan="4">No settled predictions yet.</td></tr>`;
+
+  const providers = system?.providers || [];
+  document.getElementById("provider-body").innerHTML = providers.map(p => `
+    <tr><td>${p.provider}</td><td class="num">${p.daily_used}</td><td>${p.circuit_open ? "OPEN (paused)" : "closed (healthy)"}</td></tr>
+  `).join("");
+})();
+</script>
+</body>
+</html>

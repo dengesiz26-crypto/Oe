@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-09-25T08:00:00+00:00",
+  "picks": [
+    {
+      "match_id": "goaldir:5511023",
+      "home_team": "Manchester City",
+      "away_team": "Arsenal",
+      "kickoff_utc": "2026-09-27T15:30:00+00:00",
+      "league": "Premier League",
+      "market": "over_1.5",
+      "probability": 0.782,
+      "odds": 1.34,
+      "fair_odds": 1.279,
+      "edge": 0.048,
+      "classification": "BANKO",
+      "risk_level": "LOW",
+      "risk_score": 0.09,
+      "decision": "PLAY",
+      "notes": [],
+      "model_version": "v0.1",
+      "data_quality": 0.97
+    },
+    {
+      "match_id": "goaldir:5511023",
+      "home_team": "Manchester City",
+      "away_team": "Arsenal",
+      "kickoff_utc": "2026-09-27T15:30:00+00:00",
+      "league": "Premier League",
+      "market": "1x2_home",
+      "probability": 0.614,
+      "odds": 1.72,
+      "fair_odds": 1.629,
+      "edge": 0.056,
+      "classification": "STANDARD",
+      "risk_level": "LOW",
+      "risk_score": 0.14,
+      "decision": "PLAY",
+      "notes": [],
+      "model_version": "v0.1",
+      "data_quality": 0.97
+    },
+    {
+      "match_id": "goaldir:5511034",
+      "home_team": "Fenerbahce",
+      "away_team": "Galatasaray",
+      "kickoff_utc": "2026-09-28T18:00:00+00:00",
+      "league": "Super Lig",
+      "market": "under_2.5",
+      "probability": 0.579,
+      "odds": 1.95,
+      "fair_odds": 1.727,
+      "edge": 0.129,
+      "classification": "IDEAL",
+      "risk_level": "MEDIUM",
+      "risk_score": 0.34,
+      "decision": "PLAY",
+      "notes": [],
+      "model_version": "v0.1",
+      "data_quality": 0.88
+    }
+  ]
+}
